@@ -72,7 +72,7 @@ packages:
 sqlc generate
 ```
 
-4. Execute sqlc-grpc
+4. Execute sqlc-connect
 
 ```sh
 sqlc-connect -m "authors"
