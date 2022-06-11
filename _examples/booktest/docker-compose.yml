@@ -1,0 +1,18 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"    
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    volumes:
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/1-ddl.sql
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
