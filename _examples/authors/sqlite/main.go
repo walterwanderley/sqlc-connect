@@ -23,17 +23,17 @@ import (
 	"golang.org/x/net/http2/h2c"
 
 	// database driver
-	_ "github.com/jackc/pgx/v4/stdlib"
+	_ "github.com/mattn/go-sqlite3"
 )
 
-//go:generate sqlc-connect -m booktest -append
+//go:generate sqlc-connect -m authors -migration-path sql/migrations -append
 
-const serviceName = "booktest"
+const serviceName = "authors"
 
 var (
-	dbURL string
-
-	port int
+	dbURL          string
+	replicationURL string
+	port           int
 )
 
 func main() {
@@ -41,7 +41,7 @@ func main() {
 	flag.StringVar(&dbURL, "db", "", "The Database connection URL")
 	flag.IntVar(&port, "port", 5000, "The server port")
 	flag.BoolVar(&dev, "dev", false, "Set logger to development mode")
-
+	flag.StringVar(&replicationURL, "replication", "", "S3 replication URL")
 	flag.Parse()
 
 	log := logger(dev)
@@ -59,9 +59,21 @@ func run(log *zap.Logger) error {
 	}
 	log.Info("startup", zap.Int("GOMAXPROCS", runtime.GOMAXPROCS(0)))
 
-	db, err := sql.Open("pgx", dbURL)
+	db, err := sql.Open("sqlite3", dbURL)
 	if err != nil {
 		return err
+	}
+	db.SetMaxOpenConns(1)
+	if replicationURL != "" {
+		log.Info("replication", zap.String("url", replicationURL))
+		lsdb, err := replicate(context.Background(), dbURL, replicationURL)
+		if err != nil {
+			log.Fatal("init replication error", zap.Error(err))
+		}
+		defer lsdb.SoftClose()
+	}
+	if err := ensureSchema(db); err != nil {
+		log.Fatal("migration error", zap.Error(err))
 	}
 
 	mux := http.NewServeMux()
