@@ -21,7 +21,7 @@ import (
   	"golang.org/x/net/http2/h2c"
 
 	// database driver
-	_ {{if eq .Database "mysql"}}"github.com/go-sql-driver/mysql"{{else}}"github.com/jackc/pgx/v4/stdlib"{{end}}
+	_ {{if eq .Database "mysql"}}"github.com/go-sql-driver/mysql"{{else if eq .Database "sqlite"}}"github.com/mattn/go-sqlite3"{{else}}"github.com/jackc/pgx/v4/stdlib"{{end}}
 
 	{{range .Packages}}app_{{.Package}} "{{ .GoModule}}/{{.SrcPath}}"
 	{{end}}
@@ -32,8 +32,9 @@ import (
 const serviceName = "{{ .GoModule}}"
 
 var (
-	dbURL string
-	port int
+	dbURL          string
+	{{if eq .Database "sqlite"}}replicationURL string{{end}}
+	port           int
 )
 
 func main() {
@@ -41,6 +42,7 @@ func main() {
 	flag.StringVar(&dbURL, "db", "", "The Database connection URL")
 	flag.IntVar(&port, "port", 5000, "The server port")
 	flag.BoolVar(&dev, "dev", false, "Set logger to development mode")
+	{{if eq .Database "sqlite"}}flag.StringVar(&replicationURL, "replication", "", "S3 replication URL"){{end}}
 	flag.Parse()
 
 	log := logger(dev)
@@ -58,10 +60,19 @@ func run(log *zap.Logger) error {
 	}
 	log.Info("startup", zap.Int("GOMAXPROCS", runtime.GOMAXPROCS(0)))
 
-	db, err := sql.Open("{{if eq .Database "mysql"}}mysql{{else}}pgx{{end}}", dbURL)
+	db, err := sql.Open("{{if eq .Database "mysql"}}mysql{{else if eq .Database "sqlite"}}sqlite3{{else}}pgx{{end}}", dbURL)
 	if err != nil {
 		return err
 	}
+	{{if eq .Database "sqlite"}}db.SetMaxOpenConns(1)
+	if replicationURL != "" {
+		log.Info("replication", zap.String("url", replicationURL))
+		lsdb, err := replicate(context.Background(), dbURL, replicationURL)
+		if err != nil { log.Fatal("init replication error", zap.Error(err)) }
+		defer lsdb.SoftClose()
+	}
+	{{end -}}
+	{{if .MigrationPath}}if err := ensureSchema(db); err != nil { log.Fatal("migration error", zap.Error(err)) }{{end}}
 
 	mux := http.NewServeMux()
 	registerHandlers(mux, log, db)

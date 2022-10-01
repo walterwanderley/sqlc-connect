@@ -14,9 +14,10 @@ import (
 )
 
 type Definition struct {
-	Args     string
-	GoModule string
-	Packages []*Package
+	Args          string
+	GoModule      string
+	Packages      []*Package
+	MigrationPath string
 }
 
 func (d *Definition) Database() string {
@@ -53,6 +54,7 @@ type Package struct {
 	CustomProtoImports         []string
 	CustomServiceProtoComments []string
 	CustomServiceProtoOptions  []string
+	HasExecResult              bool
 }
 
 func (p *Package) ProtoImports() []string {

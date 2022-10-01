@@ -116,13 +116,21 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 				return err
 			}
 			for _, pkg := range def.Packages {
-				if len(pkg.OutputAdapters) > 0 {
+				if len(pkg.OutputAdapters) > 0 || pkg.HasExecResult {
 					err = genFromTemplate(path, string(tpl), pkg, true, filepath.Join(pkg.SrcPath, "adapters.go"))
 					if err != nil {
 						return err
 					}
 				}
 			}
+			return nil
+		}
+
+		if strings.HasSuffix(newPath, "migration.go") && def.MigrationPath == "" {
+			return nil
+		}
+
+		if strings.HasSuffix(newPath, "replication.go") && def.Database() != "sqlite" {
 			return nil
 		}
 
