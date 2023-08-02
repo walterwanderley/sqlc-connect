@@ -151,9 +151,9 @@ func postProcess(def *metadata.Definition, workingDirectory string) {
 	fmt.Printf("Configuring project %s...\n", def.GoModule)
 	execCommand("go mod init " + def.GoModule)
 	execCommand("go mod tidy")
-	execCommand("go install google.golang.org/protobuf/cmd/protoc-gen-go " +
-		"github.com/bufbuild/connect-go/cmd/protoc-gen-connect-go" +
-		"github.com/bufbuild/buf/cmd/buf")
+	execCommand("go install google.golang.org/protobuf/cmd/protoc-gen-go")
+	execCommand("go install github.com/bufbuild/connect-go/cmd/protoc-gen-connect-go")
+	execCommand("go install github.com/bufbuild/buf/cmd/buf")
 	fmt.Println("Compiling protocol buffers...")
 	if err := os.Chdir("proto"); err != nil {
 		panic(err)

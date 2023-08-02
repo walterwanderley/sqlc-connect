@@ -3,7 +3,7 @@ Generate [connect-go](https://connect.build/) server from SQL.
 
 ### Requirements
 
-- Go 1.18 or superior
+- Go 1.19 or superior
 - [sqlc](https://sqlc.dev/)
 - [buf](https://buf.build/)
 

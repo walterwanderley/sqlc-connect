@@ -25,6 +25,38 @@ const (
 	BooksServiceName = "books.v1.BooksService"
 )
 
+// These constants are the fully-qualified names of the RPCs defined in this package. They're
+// exposed at runtime as Spec.Procedure and as the final two segments of the HTTP route.
+//
+// Note that these are different from the fully-qualified method names used by
+// google.golang.org/protobuf/reflect/protoreflect. To convert from these constants to
+// reflection-formatted method names, remove the leading slash and convert the remaining slash to a
+// period.
+const (
+	// BooksServiceBooksByTagsProcedure is the fully-qualified name of the BooksService's BooksByTags
+	// RPC.
+	BooksServiceBooksByTagsProcedure = "/books.v1.BooksService/BooksByTags"
+	// BooksServiceBooksByTitleYearProcedure is the fully-qualified name of the BooksService's
+	// BooksByTitleYear RPC.
+	BooksServiceBooksByTitleYearProcedure = "/books.v1.BooksService/BooksByTitleYear"
+	// BooksServiceCreateAuthorProcedure is the fully-qualified name of the BooksService's CreateAuthor
+	// RPC.
+	BooksServiceCreateAuthorProcedure = "/books.v1.BooksService/CreateAuthor"
+	// BooksServiceCreateBookProcedure is the fully-qualified name of the BooksService's CreateBook RPC.
+	BooksServiceCreateBookProcedure = "/books.v1.BooksService/CreateBook"
+	// BooksServiceDeleteBookProcedure is the fully-qualified name of the BooksService's DeleteBook RPC.
+	BooksServiceDeleteBookProcedure = "/books.v1.BooksService/DeleteBook"
+	// BooksServiceGetAuthorProcedure is the fully-qualified name of the BooksService's GetAuthor RPC.
+	BooksServiceGetAuthorProcedure = "/books.v1.BooksService/GetAuthor"
+	// BooksServiceGetBookProcedure is the fully-qualified name of the BooksService's GetBook RPC.
+	BooksServiceGetBookProcedure = "/books.v1.BooksService/GetBook"
+	// BooksServiceUpdateBookProcedure is the fully-qualified name of the BooksService's UpdateBook RPC.
+	BooksServiceUpdateBookProcedure = "/books.v1.BooksService/UpdateBook"
+	// BooksServiceUpdateBookISBNProcedure is the fully-qualified name of the BooksService's
+	// UpdateBookISBN RPC.
+	BooksServiceUpdateBookISBNProcedure = "/books.v1.BooksService/UpdateBookISBN"
+)
+
 // BooksServiceClient is a client for the books.v1.BooksService service.
 type BooksServiceClient interface {
 	BooksByTags(context.Context, *connect_go.Request[v1.BooksByTagsRequest]) (*connect_go.Response[v1.BooksByTagsResponse], error)
@@ -50,47 +82,47 @@ func NewBooksServiceClient(httpClient connect_go.HTTPClient, baseURL string, opt
 	return &booksServiceClient{
 		booksByTags: connect_go.NewClient[v1.BooksByTagsRequest, v1.BooksByTagsResponse](
 			httpClient,
-			baseURL+"/books.v1.BooksService/BooksByTags",
+			baseURL+BooksServiceBooksByTagsProcedure,
 			opts...,
 		),
 		booksByTitleYear: connect_go.NewClient[v1.BooksByTitleYearRequest, v1.BooksByTitleYearResponse](
 			httpClient,
-			baseURL+"/books.v1.BooksService/BooksByTitleYear",
+			baseURL+BooksServiceBooksByTitleYearProcedure,
 			opts...,
 		),
 		createAuthor: connect_go.NewClient[v1.CreateAuthorRequest, v1.CreateAuthorResponse](
 			httpClient,
-			baseURL+"/books.v1.BooksService/CreateAuthor",
+			baseURL+BooksServiceCreateAuthorProcedure,
 			opts...,
 		),
 		createBook: connect_go.NewClient[v1.CreateBookRequest, v1.CreateBookResponse](
 			httpClient,
-			baseURL+"/books.v1.BooksService/CreateBook",
+			baseURL+BooksServiceCreateBookProcedure,
 			opts...,
 		),
 		deleteBook: connect_go.NewClient[v1.DeleteBookRequest, v1.DeleteBookResponse](
 			httpClient,
-			baseURL+"/books.v1.BooksService/DeleteBook",
+			baseURL+BooksServiceDeleteBookProcedure,
 			opts...,
 		),
 		getAuthor: connect_go.NewClient[v1.GetAuthorRequest, v1.GetAuthorResponse](
 			httpClient,
-			baseURL+"/books.v1.BooksService/GetAuthor",
+			baseURL+BooksServiceGetAuthorProcedure,
 			opts...,
 		),
 		getBook: connect_go.NewClient[v1.GetBookRequest, v1.GetBookResponse](
 			httpClient,
-			baseURL+"/books.v1.BooksService/GetBook",
+			baseURL+BooksServiceGetBookProcedure,
 			opts...,
 		),
 		updateBook: connect_go.NewClient[v1.UpdateBookRequest, v1.UpdateBookResponse](
 			httpClient,
-			baseURL+"/books.v1.BooksService/UpdateBook",
+			baseURL+BooksServiceUpdateBookProcedure,
 			opts...,
 		),
 		updateBookISBN: connect_go.NewClient[v1.UpdateBookISBNRequest, v1.UpdateBookISBNResponse](
 			httpClient,
-			baseURL+"/books.v1.BooksService/UpdateBookISBN",
+			baseURL+BooksServiceUpdateBookISBNProcedure,
 			opts...,
 		),
 	}
@@ -173,53 +205,75 @@ type BooksServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewBooksServiceHandler(svc BooksServiceHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	mux := http.NewServeMux()
-	mux.Handle("/books.v1.BooksService/BooksByTags", connect_go.NewUnaryHandler(
-		"/books.v1.BooksService/BooksByTags",
+	booksServiceBooksByTagsHandler := connect_go.NewUnaryHandler(
+		BooksServiceBooksByTagsProcedure,
 		svc.BooksByTags,
 		opts...,
-	))
-	mux.Handle("/books.v1.BooksService/BooksByTitleYear", connect_go.NewUnaryHandler(
-		"/books.v1.BooksService/BooksByTitleYear",
+	)
+	booksServiceBooksByTitleYearHandler := connect_go.NewUnaryHandler(
+		BooksServiceBooksByTitleYearProcedure,
 		svc.BooksByTitleYear,
 		opts...,
-	))
-	mux.Handle("/books.v1.BooksService/CreateAuthor", connect_go.NewUnaryHandler(
-		"/books.v1.BooksService/CreateAuthor",
+	)
+	booksServiceCreateAuthorHandler := connect_go.NewUnaryHandler(
+		BooksServiceCreateAuthorProcedure,
 		svc.CreateAuthor,
 		opts...,
-	))
-	mux.Handle("/books.v1.BooksService/CreateBook", connect_go.NewUnaryHandler(
-		"/books.v1.BooksService/CreateBook",
+	)
+	booksServiceCreateBookHandler := connect_go.NewUnaryHandler(
+		BooksServiceCreateBookProcedure,
 		svc.CreateBook,
 		opts...,
-	))
-	mux.Handle("/books.v1.BooksService/DeleteBook", connect_go.NewUnaryHandler(
-		"/books.v1.BooksService/DeleteBook",
+	)
+	booksServiceDeleteBookHandler := connect_go.NewUnaryHandler(
+		BooksServiceDeleteBookProcedure,
 		svc.DeleteBook,
 		opts...,
-	))
-	mux.Handle("/books.v1.BooksService/GetAuthor", connect_go.NewUnaryHandler(
-		"/books.v1.BooksService/GetAuthor",
+	)
+	booksServiceGetAuthorHandler := connect_go.NewUnaryHandler(
+		BooksServiceGetAuthorProcedure,
 		svc.GetAuthor,
 		opts...,
-	))
-	mux.Handle("/books.v1.BooksService/GetBook", connect_go.NewUnaryHandler(
-		"/books.v1.BooksService/GetBook",
+	)
+	booksServiceGetBookHandler := connect_go.NewUnaryHandler(
+		BooksServiceGetBookProcedure,
 		svc.GetBook,
 		opts...,
-	))
-	mux.Handle("/books.v1.BooksService/UpdateBook", connect_go.NewUnaryHandler(
-		"/books.v1.BooksService/UpdateBook",
+	)
+	booksServiceUpdateBookHandler := connect_go.NewUnaryHandler(
+		BooksServiceUpdateBookProcedure,
 		svc.UpdateBook,
 		opts...,
-	))
-	mux.Handle("/books.v1.BooksService/UpdateBookISBN", connect_go.NewUnaryHandler(
-		"/books.v1.BooksService/UpdateBookISBN",
+	)
+	booksServiceUpdateBookISBNHandler := connect_go.NewUnaryHandler(
+		BooksServiceUpdateBookISBNProcedure,
 		svc.UpdateBookISBN,
 		opts...,
-	))
-	return "/books.v1.BooksService/", mux
+	)
+	return "/books.v1.BooksService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case BooksServiceBooksByTagsProcedure:
+			booksServiceBooksByTagsHandler.ServeHTTP(w, r)
+		case BooksServiceBooksByTitleYearProcedure:
+			booksServiceBooksByTitleYearHandler.ServeHTTP(w, r)
+		case BooksServiceCreateAuthorProcedure:
+			booksServiceCreateAuthorHandler.ServeHTTP(w, r)
+		case BooksServiceCreateBookProcedure:
+			booksServiceCreateBookHandler.ServeHTTP(w, r)
+		case BooksServiceDeleteBookProcedure:
+			booksServiceDeleteBookHandler.ServeHTTP(w, r)
+		case BooksServiceGetAuthorProcedure:
+			booksServiceGetAuthorHandler.ServeHTTP(w, r)
+		case BooksServiceGetBookProcedure:
+			booksServiceGetBookHandler.ServeHTTP(w, r)
+		case BooksServiceUpdateBookProcedure:
+			booksServiceUpdateBookHandler.ServeHTTP(w, r)
+		case BooksServiceUpdateBookISBNProcedure:
+			booksServiceUpdateBookISBNHandler.ServeHTTP(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	})
 }
 
 // UnimplementedBooksServiceHandler returns CodeUnimplemented from all methods.

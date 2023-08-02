@@ -25,6 +25,28 @@ const (
 	AuthorsServiceName = "authors.v1.AuthorsService"
 )
 
+// These constants are the fully-qualified names of the RPCs defined in this package. They're
+// exposed at runtime as Spec.Procedure and as the final two segments of the HTTP route.
+//
+// Note that these are different from the fully-qualified method names used by
+// google.golang.org/protobuf/reflect/protoreflect. To convert from these constants to
+// reflection-formatted method names, remove the leading slash and convert the remaining slash to a
+// period.
+const (
+	// AuthorsServiceCreateAuthorProcedure is the fully-qualified name of the AuthorsService's
+	// CreateAuthor RPC.
+	AuthorsServiceCreateAuthorProcedure = "/authors.v1.AuthorsService/CreateAuthor"
+	// AuthorsServiceDeleteAuthorProcedure is the fully-qualified name of the AuthorsService's
+	// DeleteAuthor RPC.
+	AuthorsServiceDeleteAuthorProcedure = "/authors.v1.AuthorsService/DeleteAuthor"
+	// AuthorsServiceGetAuthorProcedure is the fully-qualified name of the AuthorsService's GetAuthor
+	// RPC.
+	AuthorsServiceGetAuthorProcedure = "/authors.v1.AuthorsService/GetAuthor"
+	// AuthorsServiceListAuthorsProcedure is the fully-qualified name of the AuthorsService's
+	// ListAuthors RPC.
+	AuthorsServiceListAuthorsProcedure = "/authors.v1.AuthorsService/ListAuthors"
+)
+
 // AuthorsServiceClient is a client for the authors.v1.AuthorsService service.
 type AuthorsServiceClient interface {
 	CreateAuthor(context.Context, *connect_go.Request[v1.CreateAuthorRequest]) (*connect_go.Response[v1.CreateAuthorResponse], error)
@@ -45,22 +67,22 @@ func NewAuthorsServiceClient(httpClient connect_go.HTTPClient, baseURL string, o
 	return &authorsServiceClient{
 		createAuthor: connect_go.NewClient[v1.CreateAuthorRequest, v1.CreateAuthorResponse](
 			httpClient,
-			baseURL+"/authors.v1.AuthorsService/CreateAuthor",
+			baseURL+AuthorsServiceCreateAuthorProcedure,
 			opts...,
 		),
 		deleteAuthor: connect_go.NewClient[v1.DeleteAuthorRequest, v1.DeleteAuthorResponse](
 			httpClient,
-			baseURL+"/authors.v1.AuthorsService/DeleteAuthor",
+			baseURL+AuthorsServiceDeleteAuthorProcedure,
 			opts...,
 		),
 		getAuthor: connect_go.NewClient[v1.GetAuthorRequest, v1.GetAuthorResponse](
 			httpClient,
-			baseURL+"/authors.v1.AuthorsService/GetAuthor",
+			baseURL+AuthorsServiceGetAuthorProcedure,
 			opts...,
 		),
 		listAuthors: connect_go.NewClient[v1.ListAuthorsRequest, v1.ListAuthorsResponse](
 			httpClient,
-			baseURL+"/authors.v1.AuthorsService/ListAuthors",
+			baseURL+AuthorsServiceListAuthorsProcedure,
 			opts...,
 		),
 	}
@@ -108,28 +130,40 @@ type AuthorsServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewAuthorsServiceHandler(svc AuthorsServiceHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	mux := http.NewServeMux()
-	mux.Handle("/authors.v1.AuthorsService/CreateAuthor", connect_go.NewUnaryHandler(
-		"/authors.v1.AuthorsService/CreateAuthor",
+	authorsServiceCreateAuthorHandler := connect_go.NewUnaryHandler(
+		AuthorsServiceCreateAuthorProcedure,
 		svc.CreateAuthor,
 		opts...,
-	))
-	mux.Handle("/authors.v1.AuthorsService/DeleteAuthor", connect_go.NewUnaryHandler(
-		"/authors.v1.AuthorsService/DeleteAuthor",
+	)
+	authorsServiceDeleteAuthorHandler := connect_go.NewUnaryHandler(
+		AuthorsServiceDeleteAuthorProcedure,
 		svc.DeleteAuthor,
 		opts...,
-	))
-	mux.Handle("/authors.v1.AuthorsService/GetAuthor", connect_go.NewUnaryHandler(
-		"/authors.v1.AuthorsService/GetAuthor",
+	)
+	authorsServiceGetAuthorHandler := connect_go.NewUnaryHandler(
+		AuthorsServiceGetAuthorProcedure,
 		svc.GetAuthor,
 		opts...,
-	))
-	mux.Handle("/authors.v1.AuthorsService/ListAuthors", connect_go.NewUnaryHandler(
-		"/authors.v1.AuthorsService/ListAuthors",
+	)
+	authorsServiceListAuthorsHandler := connect_go.NewUnaryHandler(
+		AuthorsServiceListAuthorsProcedure,
 		svc.ListAuthors,
 		opts...,
-	))
-	return "/authors.v1.AuthorsService/", mux
+	)
+	return "/authors.v1.AuthorsService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case AuthorsServiceCreateAuthorProcedure:
+			authorsServiceCreateAuthorHandler.ServeHTTP(w, r)
+		case AuthorsServiceDeleteAuthorProcedure:
+			authorsServiceDeleteAuthorHandler.ServeHTTP(w, r)
+		case AuthorsServiceGetAuthorProcedure:
+			authorsServiceGetAuthorHandler.ServeHTTP(w, r)
+		case AuthorsServiceListAuthorsProcedure:
+			authorsServiceListAuthorsHandler.ServeHTTP(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	})
 }
 
 // UnimplementedAuthorsServiceHandler returns CodeUnimplemented from all methods.
