@@ -3,13 +3,13 @@
 Booktest example taken from [sqlc][sqlc] Git repository [examples][sqlc-git].
 
 [sqlc]: https://sqlc.dev
-[sqlc-git]: https://github.com/kyleconroy/sqlc/tree/main/examples/booktest
+[sqlc-git]: https://github.com/sqlc-dev/sqlc/tree/main/examples/booktest
 
 ## Running
 
 ```sh
 ./gen.sh
-docker-compose up
+docker compose up
 ```
 
 ### Exploring with gRPC UI

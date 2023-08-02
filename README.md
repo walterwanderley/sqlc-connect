@@ -8,7 +8,7 @@ Generate [connect-go](https://connect.build/) server from SQL.
 - [buf](https://buf.build/)
 
 ```sh
-go install github.com/kyleconroy/sqlc/cmd/sqlc@latest
+go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 go install github.com/bufbuild/buf/cmd/buf@latest
 ```
 
