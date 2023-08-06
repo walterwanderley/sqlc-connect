@@ -5,6 +5,7 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"log"
 	"os"
 	"regexp"
 	"sort"
@@ -77,14 +78,14 @@ func (p *Package) ProtoImports() []string {
 func (p *Package) LoadOptions(protoFile string) {
 	f, err := os.Open(protoFile)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 		return
 	}
 	defer f.Close()
 	parser := proto.NewParser(f)
 	def, err := parser.Parse()
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 		return
 	}
 

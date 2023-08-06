@@ -57,13 +57,15 @@ WHERE id = $1;
 2. Create a sqlc.yaml file
 
 ```yaml
-version: "1"
-packages:
-  - path: "internal/author"
-    queries: "./queries.sql"
-    schema: "./queries.sql"
-    engine: "postgresql"
-
+version: "2"
+sql:
+- schema: "./queries.sql"
+  queries: "./queries.sql"
+  engine: "postgresql"
+  gen:
+    go:
+      out: "internal/author"
+      
 ```
 
 3. Execute sqlc

@@ -9,6 +9,7 @@ import (
 	"io"
 	"io/fs"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -26,7 +27,7 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 	rootPath := "templates"
 	return fs.WalkDir(templates, rootPath, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
-			fmt.Println("ERROR ", err.Error())
+			log.Println("ERROR ", err.Error())
 			return err
 		}
 
@@ -43,7 +44,7 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 			return nil
 		}
 
-		fmt.Println(path, "...")
+		log.Println(path, "...")
 
 		in, err := templates.Open(path)
 		if err != nil {

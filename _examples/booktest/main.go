@@ -23,7 +23,7 @@ import (
 	"golang.org/x/net/http2/h2c"
 
 	// database driver
-	_ "github.com/jackc/pgx/v4/stdlib"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 //go:generate sqlc-connect -m booktest -append
