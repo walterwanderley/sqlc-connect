@@ -8,7 +8,6 @@ import (
 	"go/format"
 	"io"
 	"io/fs"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -54,7 +53,7 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 
 		if strings.HasSuffix(newPath, "service.proto") {
 			dir := strings.TrimSuffix(newPath, "service.proto")
-			tpl, err := ioutil.ReadAll(in)
+			tpl, err := io.ReadAll(in)
 			if err != nil {
 				return err
 			}
@@ -80,7 +79,7 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 		}
 
 		if strings.HasSuffix(newPath, "service.go") {
-			tpl, err := ioutil.ReadAll(in)
+			tpl, err := io.ReadAll(in)
 			if err != nil {
 				return err
 			}
@@ -94,7 +93,7 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 		}
 
 		if strings.HasSuffix(newPath, "service.factory.go") {
-			tpl, err := ioutil.ReadAll(in)
+			tpl, err := io.ReadAll(in)
 			if err != nil {
 				return err
 			}
@@ -112,7 +111,7 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 		}
 
 		if strings.HasSuffix(newPath, "adapters.go") {
-			tpl, err := ioutil.ReadAll(in)
+			tpl, err := io.ReadAll(in)
 			if err != nil {
 				return err
 			}
@@ -136,7 +135,7 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 		}
 
 		if strings.HasSuffix(path, ".tmpl") {
-			tpl, err := ioutil.ReadAll(in)
+			tpl, err := io.ReadAll(in)
 			if err != nil {
 				return err
 			}
