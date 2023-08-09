@@ -69,7 +69,7 @@ func run(log *zap.Logger) error {
 		log.Info("replication", zap.String("url", replicationURL))
 		lsdb, err := replicate(context.Background(), dbURL, replicationURL)
 		if err != nil { log.Fatal("init replication error", zap.Error(err)) }
-		defer lsdb.SoftClose()
+		defer lsdb.Close()
 	}
 	{{end -}}
 	{{if .MigrationPath}}if err := ensureSchema(db); err != nil { log.Fatal("migration error", zap.Error(err)) }{{end}}
