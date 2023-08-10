@@ -70,7 +70,7 @@ func run(log *zap.Logger) error {
 		if err != nil {
 			log.Fatal("init replication error", zap.Error(err))
 		}
-		defer lsdb.SoftClose()
+		defer lsdb.Close()
 	}
 	if err := ensureSchema(db); err != nil {
 		log.Fatal("migration error", zap.Error(err))
