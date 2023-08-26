@@ -12,8 +12,8 @@ import (
 	"{{ .GoModule}}/api/{{.Package}}/v1/v1connect"
 )
 
-// NewService is a constructor of a v1.{{ .Package | UpperFirst}}ServiceHandler implementation.
+// NewService is a constructor of a v1.{{ .Package | PascalCase}}ServiceHandler implementation.
 // Use this function to customize the server by adding middlewares to it.
-func NewService(logger *zap.Logger, querier {{if .EmitInterface}}Querier{{else}}*Queries{{end}}{{if .EmitDbArgument}}, db *sql.DB{{end}}) v1connect.{{ .Package | UpperFirst}}ServiceHandler {
+func NewService(logger *zap.Logger, querier {{if .EmitInterface}}Querier{{else}}*Queries{{end}}{{if .EmitDbArgument}}, db *sql.DB{{end}}) v1connect.{{ .Package | PascalCase}}ServiceHandler {
 	return &Service{logger: logger, querier: querier{{if .EmitDbArgument}}, db: db{{end}}}
 }

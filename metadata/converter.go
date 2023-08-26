@@ -249,6 +249,10 @@ func ToSnakeCase(str string) string {
 	return strings.ToLower(snake)
 }
 
+func ToPascalCase(str string) string {
+	return UpperFirstCharacter(generator.CamelCase(ToSnakeCase(str)))
+}
+
 func camelCaseProto(str string) string {
 	return generator.CamelCase(ToSnakeCase(str))
 }

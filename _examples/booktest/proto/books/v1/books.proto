@@ -8,139 +8,131 @@ import "google/protobuf/wrappers.proto";
 option go_package = "booktest/api/books/v1";
 
 service BooksService {
-    
-    rpc BooksByTags(BooksByTagsRequest) returns (BooksByTagsResponse) { }
-    
-    rpc BooksByTitleYear(BooksByTitleYearRequest) returns (BooksByTitleYearResponse) { }
-    
-    rpc CreateAuthor(CreateAuthorRequest) returns (CreateAuthorResponse) { }
-    
-    rpc CreateBook(CreateBookRequest) returns (CreateBookResponse) { }
-    
-    rpc DeleteBook(DeleteBookRequest) returns (DeleteBookResponse) { }
-    
-    rpc GetAuthor(GetAuthorRequest) returns (GetAuthorResponse) { }
-    
-    rpc GetBook(GetBookRequest) returns (GetBookResponse) { }
-    
-    rpc UpdateBook(UpdateBookRequest) returns (UpdateBookResponse) { }
-    
-    rpc UpdateBookISBN(UpdateBookISBNRequest) returns (UpdateBookISBNResponse) { }
-    
+  rpc BooksByTags(BooksByTagsRequest) returns (BooksByTagsResponse) {}
+
+  rpc BooksByTitleYear(BooksByTitleYearRequest) returns (BooksByTitleYearResponse) {}
+
+  rpc CreateAuthor(CreateAuthorRequest) returns (CreateAuthorResponse) {}
+
+  rpc CreateBook(CreateBookRequest) returns (CreateBookResponse) {}
+
+  rpc DeleteBook(DeleteBookRequest) returns (DeleteBookResponse) {}
+
+  rpc GetAuthor(GetAuthorRequest) returns (GetAuthorResponse) {}
+
+  rpc GetBook(GetBookRequest) returns (GetBookResponse) {}
+
+  rpc UpdateBook(UpdateBookRequest) returns (UpdateBookResponse) {}
+
+  rpc UpdateBookISBN(UpdateBookISBNRequest) returns (UpdateBookISBNResponse) {}
 }
 
-
 message Author {
-    int32 author_id = 1;
-    string name = 2;
+  int32 author_id = 1;
+  string name = 2;
 }
 
 message Book {
-    int32 book_id = 1;
-    int32 author_id = 2;
-    string isbn = 3;
-    string book_type = 4;
-    string title = 5;
-    int32 year = 6;
-    google.protobuf.Timestamp available = 7;
-    repeated string tags = 8;
+  int32 book_id = 1;
+  int32 author_id = 2;
+  string isbn = 3;
+  string book_type = 4;
+  string title = 5;
+  int32 year = 6;
+  google.protobuf.Timestamp available = 7;
+  repeated string tags = 8;
 }
 
-message BookType {
-}
+message BookType {}
 
 message BooksByTagsRequest {
-    repeated string dollar_1 = 1;
+  repeated string dollar_1 = 1;
 }
 
 message BooksByTagsResponse {
-    repeated BooksByTagsRow list = 1;
+  repeated BooksByTagsRow list = 1;
 }
 
 message BooksByTagsRow {
-    int32 book_id = 1;
-    string title = 2;
-    google.protobuf.StringValue name = 3;
-    string isbn = 4;
-    repeated string tags = 5;
+  int32 book_id = 1;
+  string title = 2;
+  google.protobuf.StringValue name = 3;
+  string isbn = 4;
+  repeated string tags = 5;
 }
 
 message BooksByTitleYearRequest {
-    string title = 1;
-    int32 year = 2;
+  string title = 1;
+  int32 year = 2;
 }
 
 message BooksByTitleYearResponse {
-    repeated Book list = 1;
+  repeated Book list = 1;
 }
 
 message CreateAuthorRequest {
-    string name = 1;
+  string name = 1;
 }
 
 message CreateAuthorResponse {
-    Author author = 1;
+  Author author = 1;
 }
 
 message CreateBookRequest {
-    int32 author_id = 1;
-    string isbn = 2;
-    string book_type = 3;
-    string title = 4;
-    int32 year = 5;
-    google.protobuf.Timestamp available = 6;
-    repeated string tags = 7;
+  int32 author_id = 1;
+  string isbn = 2;
+  string book_type = 3;
+  string title = 4;
+  int32 year = 5;
+  google.protobuf.Timestamp available = 6;
+  repeated string tags = 7;
 }
 
 message CreateBookResponse {
-    Book book = 1;
+  Book book = 1;
 }
 
 message DeleteBookRequest {
-    int32 book_id = 1;
+  int32 book_id = 1;
 }
 
-message DeleteBookResponse {
-}
+message DeleteBookResponse {}
 
 message GetAuthorRequest {
-    int32 author_id = 1;
+  int32 author_id = 1;
 }
 
 message GetAuthorResponse {
-    Author author = 1;
+  Author author = 1;
 }
 
 message GetBookRequest {
-    int32 book_id = 1;
+  int32 book_id = 1;
 }
 
 message GetBookResponse {
-    Book book = 1;
+  Book book = 1;
 }
 
 message NullBookType {
-    string book_type = 1;
-    bool valid = 2;
+  string book_type = 1;
+  bool valid = 2;
 }
 
 message UpdateBookISBNRequest {
-    string title = 1;
-    repeated string tags = 2;
-    int32 book_id = 3;
-    string isbn = 4;
+  string title = 1;
+  repeated string tags = 2;
+  int32 book_id = 3;
+  string isbn = 4;
 }
 
-message UpdateBookISBNResponse {
-}
+message UpdateBookISBNResponse {}
 
 message UpdateBookRequest {
-    string title = 1;
-    repeated string tags = 2;
-    string book_type = 3;
-    int32 book_id = 4;
+  string title = 1;
+  repeated string tags = 2;
+  string book_type = 3;
+  int32 book_id = 4;
 }
 
-message UpdateBookResponse {
-}
-
+message UpdateBookResponse {}

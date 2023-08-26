@@ -17,12 +17,12 @@ import (
 
 func registerHandlers(mux *http.ServeMux, logger *zap.Logger, db *sql.DB) {
     {{range .Packages}}{{.Package}}Service := {{.Package}}_app.NewService(logger, {{if .EmitDbArgument}}{{.Package}}_app.New(), db{{else}}{{.Package}}_app.New(db){{end}})
-    {{.Package}}Path, {{.Package}}Handler := {{.Package}}_v1connect.New{{.Package | UpperFirst}}ServiceHandler({{.Package}}Service)
+    {{.Package}}Path, {{.Package}}Handler := {{.Package}}_v1connect.New{{.Package | PascalCase}}ServiceHandler({{.Package}}Service)
     mux.Handle({{.Package}}Path, {{.Package}}Handler)
 	{{end}}
 
     reflector := grpcreflect.NewStaticReflector(
-		{{range .Packages}}{{.Package}}_v1connect.{{.Package | UpperFirst}}ServiceName,
+		{{range .Packages}}{{.Package}}_v1connect.{{.Package | PascalCase}}ServiceName,
         {{end}}
 	)
 	mux.Handle(grpcreflect.NewHandlerV1(reflector))

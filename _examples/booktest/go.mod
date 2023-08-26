@@ -3,7 +3,7 @@ module booktest
 go 1.20
 
 require (
-	github.com/bufbuild/buf v1.25.1
+	github.com/bufbuild/buf v1.26.1
 	github.com/bufbuild/connect-go v1.10.0
 	github.com/bufbuild/connect-grpcreflect-go v1.1.0
 	github.com/jackc/pgx/v5 v5.4.3

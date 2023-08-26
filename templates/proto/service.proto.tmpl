@@ -9,7 +9,7 @@ package {{.Package | SnakeCase}}.v1;
 {{end}}
 {{range .CustomServiceProtoComments}}// {{ .}}
 {{end -}}
-service {{.Package | UpperFirst}}Service {
+service {{.Package | PascalCase}}Service {
     {{range .CustomServiceProtoOptions}}{{ .}}
     {{end}}
     {{- range .Services}}

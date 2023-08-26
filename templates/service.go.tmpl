@@ -20,7 +20,7 @@ import (
 )
 	
 type Service struct {
-    v1connect.Unimplemented{{ .Package | UpperFirst}}ServiceHandler
+    v1connect.Unimplemented{{ .Package | PascalCase}}ServiceHandler
 	logger *zap.Logger
 	querier {{if .EmitInterface}}Querier{{else}}*Queries{{end}}
 	{{if .EmitDbArgument}}db *sql.DB{{end}}
