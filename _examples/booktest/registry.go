@@ -7,14 +7,13 @@ import (
 	"net/http"
 
 	grpcreflect "github.com/bufbuild/connect-grpcreflect-go"
-	"go.uber.org/zap"
 
 	books_v1connect "booktest/api/books/v1/v1connect"
 	books_app "booktest/internal/books"
 )
 
-func registerHandlers(mux *http.ServeMux, logger *zap.Logger, db *sql.DB) {
-	booksService := books_app.NewService(logger, books_app.New(db))
+func registerHandlers(mux *http.ServeMux, db *sql.DB) {
+	booksService := books_app.NewService(books_app.New(db))
 	booksPath, booksHandler := books_v1connect.NewBooksServiceHandler(booksService)
 	mux.Handle(booksPath, booksHandler)
 

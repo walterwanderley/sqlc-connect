@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package authors.v1;
+
+import "google/protobuf/wrappers.proto";
+
+option go_package = "authors/api/authors/v1";
+
+service AuthorsService {
+  rpc CreateAuthor(CreateAuthorRequest) returns (CreateAuthorResponse) {}
+
+  rpc DeleteAuthor(DeleteAuthorRequest) returns (DeleteAuthorResponse) {}
+
+  rpc GetAuthor(GetAuthorRequest) returns (GetAuthorResponse) {}
+
+  rpc ListAuthors(ListAuthorsRequest) returns (ListAuthorsResponse) {}
+}
+
+message Authors {
+  int64 id = 1;
+  string name = 2;
+  google.protobuf.StringValue bio = 3;
+}
+
+message CreateAuthorRequest {
+  string name = 1;
+  google.protobuf.StringValue bio = 2;
+}
+
+message CreateAuthorResponse {
+  Authors authors = 1;
+}
+
+message DeleteAuthorRequest {
+  int64 id = 1;
+}
+
+message DeleteAuthorResponse {}
+
+message GetAuthorRequest {
+  int64 id = 1;
+}
+
+message GetAuthorResponse {
+  Authors authors = 1;
+}
+
+message ListAuthorsRequest {}
+
+message ListAuthorsResponse {
+  repeated Authors list = 1;
+}

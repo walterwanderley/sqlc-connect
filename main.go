@@ -14,6 +14,7 @@ import (
 	"golang.org/x/mod/modfile"
 
 	"github.com/walterwanderley/sqlc-connect/metadata"
+	"github.com/walterwanderley/sqlc-grpc/config"
 )
 
 var (
@@ -55,7 +56,7 @@ func main() {
 		}
 	}
 
-	cfg, err := readConfig()
+	cfg, err := config.Load()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -103,6 +104,11 @@ func main() {
 		}
 		pkg.GoModule = module
 		pkg.Engine = p.Engine
+		if p.SqlPackage == "" {
+			pkg.SqlPackage = "database/sql"
+		} else {
+			pkg.SqlPackage = p.SqlPackage
+		}
 
 		if len(pkg.Services) == 0 {
 			log.Println("No services on package", pkg.Package)

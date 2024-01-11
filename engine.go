@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"embed"
 	"errors"
 	"fmt"
 	"go/format"
@@ -14,24 +13,21 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/walterwanderley/sqlc-grpc/converter"
 	"golang.org/x/tools/imports"
 
 	"github.com/walterwanderley/sqlc-connect/metadata"
+	"github.com/walterwanderley/sqlc-connect/templates"
 )
 
-//go:embed templates/*
-var templates embed.FS
-
 func process(def *metadata.Definition, outPath string, appendMode bool) error {
-	rootPath := "templates"
-	return fs.WalkDir(templates, rootPath, func(path string, d fs.DirEntry, err error) error {
+	return fs.WalkDir(templates.Files, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			log.Println("ERROR ", err.Error())
 			return err
 		}
 
-		newPath := strings.Replace(path, rootPath, outPath, 1)
-		newPath = strings.TrimSuffix(newPath, ".tmpl")
+		newPath := strings.TrimSuffix(path, ".tmpl")
 
 		if d.IsDir() {
 			if _, err := os.Stat(newPath); os.IsNotExist(err) {
@@ -43,9 +39,13 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 			return nil
 		}
 
+		if strings.HasSuffix(newPath, "templates.go") {
+			return nil
+		}
+
 		log.Println(path, "...")
 
-		in, err := templates.Open(path)
+		in, err := templates.Files.Open(path)
 		if err != nil {
 			return err
 		}
@@ -58,14 +58,14 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 				return err
 			}
 			for _, pkg := range def.Packages {
-				dest := filepath.Join(dir, metadata.ToSnakeCase(pkg.Package), "v1")
+				dest := filepath.Join(dir, converter.ToSnakeCase(pkg.Package), "v1")
 				if _, err := os.Stat(dest); os.IsNotExist(err) {
 					err := os.MkdirAll(dest, 0750)
 					if err != nil {
 						return err
 					}
 				}
-				destFile := filepath.Join(dest, (metadata.ToSnakeCase(pkg.Package) + ".proto"))
+				destFile := filepath.Join(dest, (converter.ToSnakeCase(pkg.Package) + ".proto"))
 				if appendMode && fileExists(destFile) {
 					pkg.LoadOptions(destFile)
 				}
@@ -171,8 +171,8 @@ func genFromTemplate(name, tmp string, data interface{}, goSource bool, outPath 
 	var b bytes.Buffer
 
 	funcMap := template.FuncMap{
-		"PascalCase": metadata.ToPascalCase,
-		"SnakeCase":  metadata.ToSnakeCase,
+		"PascalCase": converter.ToPascalCase,
+		"SnakeCase":  converter.ToSnakeCase,
 	}
 
 	t, err := template.New(name).Funcs(funcMap).Parse(tmp)

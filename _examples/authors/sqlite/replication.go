@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/url"
 	"os"
 	"path"
@@ -91,7 +90,6 @@ func restore(ctx context.Context, replica *litestream.Replica) error {
 
 	opt := litestream.NewRestoreOptions()
 	opt.OutputPath = replica.DB().Path()
-	opt.Logger = log.New(os.Stderr, "litestream-replication", log.LstdFlags|log.Lmicroseconds)
 
 	var err error
 	if opt.Generation, _, err = replica.CalcRestoreTarget(ctx, opt); err != nil {

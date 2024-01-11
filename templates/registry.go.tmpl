@@ -6,8 +6,8 @@ import (
     "database/sql"
     "net/http"
 
+    "github.com/jackc/pgx/v5/pgxpool"
     grpcreflect "github.com/bufbuild/connect-grpcreflect-go"
-    "go.uber.org/zap"
 
     {{range .Packages}}{{.Package}}_app "{{ .GoModule}}/{{.SrcPath}}"
     {{.Package}}_v1connect "{{ .GoModule}}/api/{{.Package | SnakeCase}}/v1/v1connect"
@@ -15,8 +15,8 @@ import (
 )
 
 
-func registerHandlers(mux *http.ServeMux, logger *zap.Logger, db *sql.DB) {
-    {{range .Packages}}{{.Package}}Service := {{.Package}}_app.NewService(logger, {{if .EmitDbArgument}}{{.Package}}_app.New(), db{{else}}{{.Package}}_app.New(db){{end}})
+func registerHandlers(mux *http.ServeMux, db {{if eq .SqlPackage "pgx/v5"}}*pgxpool.Pool{{else}}*sql.DB{{end}}) {
+    {{range .Packages}}{{.Package}}Service := {{.Package}}_app.NewService({{if .EmitDbArgument}}{{.Package}}_app.New(), db{{else}}{{.Package}}_app.New(db){{end}})
     {{.Package}}Path, {{.Package}}Handler := {{.Package}}_v1connect.New{{.Package | PascalCase}}ServiceHandler({{.Package}}Service)
     mux.Handle({{.Package}}Path, {{.Package}}Handler)
 	{{end}}

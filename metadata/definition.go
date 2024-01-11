@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/emicklei/proto"
+	"github.com/walterwanderley/sqlc-grpc/converter"
 )
 
 type Definition struct {
@@ -25,6 +26,15 @@ func (d *Definition) Database() string {
 	for _, p := range d.Packages {
 		if p.Engine != "" {
 			return p.Engine
+		}
+	}
+	return ""
+}
+
+func (d *Definition) SqlPackage() string {
+	for _, p := range d.Packages {
+		if p.SqlPackage != "" {
+			return p.SqlPackage
 		}
 	}
 	return ""
@@ -44,6 +54,7 @@ type Package struct {
 	GoModule                   string
 	SchemaPath                 string
 	SrcPath                    string
+	SqlPackage                 string
 	Services                   []*Service
 	Messages                   map[string]*Message
 	OutputAdapters             []*Message
@@ -106,7 +117,7 @@ func (p *Package) LoadOptions(protoFile string) {
 	}))
 
 	proto.Walk(def, proto.WithService(func(s *proto.Service) {
-		if s.Name != UpperFirstCharacter(p.Package)+"Service" {
+		if s.Name != converter.UpperFirstCharacter(p.Package)+"Service" {
 			return
 		}
 		if s.Comment != nil {
@@ -190,19 +201,19 @@ func (p *Package) importTimestamp() bool {
 func (p *Package) importWrappers() bool {
 	for _, m := range p.Messages {
 		for _, f := range m.Fields {
-			if strings.HasPrefix(f.Type, "sql.Null") && f.Type != "sql.NullTime" {
+			if (strings.HasPrefix(f.Type, "sql.Null") || strings.HasPrefix(f.Type, "pgtype.")) && f.Type != "sql.NullTime" {
 				return true
 			}
 		}
 	}
 	for _, s := range p.Services {
 		for _, n := range s.InputTypes {
-			if strings.HasPrefix(n, "sql.Null") && n != "sql.NullTime" {
+			if (strings.HasPrefix(n, "sql.Null") || strings.HasPrefix(n, "pgtype.")) && n != "sql.NullTime" {
 				return true
 			}
 		}
 
-		if strings.HasPrefix(s.Output, "sql.Null") && s.Output != "sql.NullTime" {
+		if (strings.HasPrefix(s.Output, "sql.Null") || strings.HasPrefix(s.Output, "pgtype.")) && s.Output != "sql.NullTime" {
 			return true
 		}
 
@@ -318,7 +329,7 @@ func addConstant(constants map[string]string, name string, obj *ast.Object) {
 	}
 	if vs, ok := obj.Decl.(*ast.ValueSpec); ok {
 		if v, ok := vs.Values[0].(*ast.BasicLit); ok {
-			constants[UpperFirstCharacter(name)] = v.Value
+			constants[converter.UpperFirstCharacter(name)] = v.Value
 		}
 	}
 

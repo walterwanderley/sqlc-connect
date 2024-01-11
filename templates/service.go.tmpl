@@ -7,23 +7,26 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net"
 
     "github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
-	"go.uber.org/zap"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
 	pb "{{ .GoModule}}/api/{{.Package}}/v1"
 	"{{ .GoModule}}/api/{{.Package}}/v1/v1connect"
+	"{{ .GoModule}}/validation"
 )
 	
 type Service struct {
     v1connect.Unimplemented{{ .Package | PascalCase}}ServiceHandler
-	logger *zap.Logger
 	querier {{if .EmitInterface}}Querier{{else}}*Queries{{end}}
-	{{if .EmitDbArgument}}db *sql.DB{{end}}
+	{{if .EmitDbArgument}}db {{if eq .SqlPackage "database/sql"}}*sql.DB{{else}}*pgxpool.Pool{{end}}{{end}}
 }
 
 {{$emitDbArgument := .EmitDbArgument}}
@@ -33,7 +36,7 @@ func (s *Service) {{.Name}}(ctx context.Context, req *connect.Request[pb.{{.Name
 	{{end}}
 	{{if not .EmptyOutput}}result, {{end}}err := s.querier.{{ .Name}}(ctx{{if $emitDbArgument}}, s.db{{end}}{{ .ParamsCallDatabase}})
 	if err != nil {
-		s.logger.Error("{{.Name}} sql call failed", zap.Error(err))			
+		slog.Error("sql call failed", "error", err, "method", "{{.Name}}")			
 		return nil, err
 	}
 	{{ range .OutputGrpc}}{{ .}}

@@ -5,7 +5,7 @@ import (
 	"embed"
 
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/sqlite"
+	driver "github.com/golang-migrate/migrate/v4/database/sqlite3"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 )
 
@@ -19,7 +19,7 @@ func ensureSchema(db *sql.DB) error {
 	if err != nil {
 		return err
 	}
-	target, err := sqlite.WithInstance(db, new(sqlite.Config))
+	target, err := driver.WithInstance(db, new(driver.Config))
 	if err != nil {
 		return err
 	}

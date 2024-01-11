@@ -5,17 +5,17 @@ package books
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/bufbuild/connect-go"
-	"go.uber.org/zap"
 
 	pb "booktest/api/books/v1"
 	"booktest/api/books/v1/v1connect"
+	"booktest/validation"
 )
 
 type Service struct {
 	v1connect.UnimplementedBooksServiceHandler
-	logger  *zap.Logger
 	querier *Queries
 }
 
@@ -24,7 +24,7 @@ func (s *Service) BooksByTags(ctx context.Context, req *connect.Request[pb.Books
 
 	result, err := s.querier.BooksByTags(ctx, dollar_1)
 	if err != nil {
-		s.logger.Error("BooksByTags sql call failed", zap.Error(err))
+		slog.Error("sql call failed", "error", err, "method", "BooksByTags")
 		return nil, err
 	}
 	res := new(pb.BooksByTagsResponse)
@@ -41,7 +41,7 @@ func (s *Service) BooksByTitleYear(ctx context.Context, req *connect.Request[pb.
 
 	result, err := s.querier.BooksByTitleYear(ctx, arg)
 	if err != nil {
-		s.logger.Error("BooksByTitleYear sql call failed", zap.Error(err))
+		slog.Error("sql call failed", "error", err, "method", "BooksByTitleYear")
 		return nil, err
 	}
 	res := new(pb.BooksByTitleYearResponse)
@@ -56,7 +56,7 @@ func (s *Service) CreateAuthor(ctx context.Context, req *connect.Request[pb.Crea
 
 	result, err := s.querier.CreateAuthor(ctx, name)
 	if err != nil {
-		s.logger.Error("CreateAuthor sql call failed", zap.Error(err))
+		slog.Error("sql call failed", "error", err, "method", "CreateAuthor")
 		return nil, err
 	}
 	return connect.NewResponse(&pb.CreateAuthorResponse{Author: toAuthor(result)}), nil
@@ -71,18 +71,19 @@ func (s *Service) CreateBook(ctx context.Context, req *connect.Request[pb.Create
 	arg.Year = req.Msg.GetYear()
 	if v := req.Msg.GetAvailable(); v != nil {
 		if err := v.CheckValid(); err != nil {
+			err = fmt.Errorf("invalid Available: %s%w", err.Error(), validation.ErrUserInput)
 			return nil, err
 		}
 		arg.Available = v.AsTime()
 	} else {
-		err := fmt.Errorf("field Available is required")
+		err := fmt.Errorf("field Available is required%w", validation.ErrUserInput)
 		return nil, err
 	}
 	arg.Tags = req.Msg.GetTags()
 
 	result, err := s.querier.CreateBook(ctx, arg)
 	if err != nil {
-		s.logger.Error("CreateBook sql call failed", zap.Error(err))
+		slog.Error("sql call failed", "error", err, "method", "CreateBook")
 		return nil, err
 	}
 	return connect.NewResponse(&pb.CreateBookResponse{Book: toBook(result)}), nil
@@ -93,7 +94,7 @@ func (s *Service) DeleteBook(ctx context.Context, req *connect.Request[pb.Delete
 
 	err := s.querier.DeleteBook(ctx, bookID)
 	if err != nil {
-		s.logger.Error("DeleteBook sql call failed", zap.Error(err))
+		slog.Error("sql call failed", "error", err, "method", "DeleteBook")
 		return nil, err
 	}
 	return connect.NewResponse(&pb.DeleteBookResponse{}), nil
@@ -104,7 +105,7 @@ func (s *Service) GetAuthor(ctx context.Context, req *connect.Request[pb.GetAuth
 
 	result, err := s.querier.GetAuthor(ctx, authorID)
 	if err != nil {
-		s.logger.Error("GetAuthor sql call failed", zap.Error(err))
+		slog.Error("sql call failed", "error", err, "method", "GetAuthor")
 		return nil, err
 	}
 	return connect.NewResponse(&pb.GetAuthorResponse{Author: toAuthor(result)}), nil
@@ -115,7 +116,7 @@ func (s *Service) GetBook(ctx context.Context, req *connect.Request[pb.GetBookRe
 
 	result, err := s.querier.GetBook(ctx, bookID)
 	if err != nil {
-		s.logger.Error("GetBook sql call failed", zap.Error(err))
+		slog.Error("sql call failed", "error", err, "method", "GetBook")
 		return nil, err
 	}
 	return connect.NewResponse(&pb.GetBookResponse{Book: toBook(result)}), nil
@@ -130,7 +131,7 @@ func (s *Service) UpdateBook(ctx context.Context, req *connect.Request[pb.Update
 
 	err := s.querier.UpdateBook(ctx, arg)
 	if err != nil {
-		s.logger.Error("UpdateBook sql call failed", zap.Error(err))
+		slog.Error("sql call failed", "error", err, "method", "UpdateBook")
 		return nil, err
 	}
 	return connect.NewResponse(&pb.UpdateBookResponse{}), nil
@@ -145,7 +146,7 @@ func (s *Service) UpdateBookISBN(ctx context.Context, req *connect.Request[pb.Up
 
 	err := s.querier.UpdateBookISBN(ctx, arg)
 	if err != nil {
-		s.logger.Error("UpdateBookISBN sql call failed", zap.Error(err))
+		slog.Error("sql call failed", "error", err, "method", "UpdateBookISBN")
 		return nil, err
 	}
 	return connect.NewResponse(&pb.UpdateBookISBNResponse{}), nil

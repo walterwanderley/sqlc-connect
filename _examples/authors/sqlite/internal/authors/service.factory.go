@@ -3,13 +3,11 @@
 package authors
 
 import (
-	"go.uber.org/zap"
-
 	"authors/api/authors/v1/v1connect"
 )
 
 // NewService is a constructor of a v1.AuthorsServiceHandler implementation.
 // Use this function to customize the server by adding middlewares to it.
-func NewService(logger *zap.Logger, querier *Queries) v1connect.AuthorsServiceHandler {
-	return &Service{logger: logger, querier: querier}
+func NewService(querier *Queries) v1connect.AuthorsServiceHandler {
+	return &Service{querier: querier}
 }

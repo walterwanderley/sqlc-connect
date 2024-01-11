@@ -8,6 +8,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,8 +17,6 @@ import (
 	"time"
 
 	"go.uber.org/automaxprocs/maxprocs"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -44,40 +43,40 @@ func main() {
 	flag.StringVar(&replicationURL, "replication", "", "S3 replication URL")
 	flag.Parse()
 
-	log := logger(dev)
-	defer log.Sync()
+	initLogger(dev)
 
-	if err := run(log); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		log.Error("server error", zap.Error(err))
+	if err := run(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		slog.Error("server error", "error", err)
 		os.Exit(1)
 	}
 }
 
-func run(log *zap.Logger) error {
+func run() error {
 	if _, err := maxprocs.Set(); err != nil {
-		log.Warn("startup", zap.Error(err))
+		slog.Warn("startup", "error", err)
 	}
-	log.Info("startup", zap.Int("GOMAXPROCS", runtime.GOMAXPROCS(0)))
+	slog.Info("startup", "GOMAXPROCS", runtime.GOMAXPROCS(0))
 
 	db, err := sql.Open("sqlite3", dbURL)
 	if err != nil {
 		return err
 	}
-	db.SetMaxOpenConns(1)
+	defer db.Close()
+
 	if replicationURL != "" {
-		log.Info("replication", zap.String("url", replicationURL))
+		slog.Info("replication", "url", replicationURL)
 		lsdb, err := replicate(context.Background(), dbURL, replicationURL)
 		if err != nil {
-			log.Fatal("init replication error", zap.Error(err))
+			return fmt.Errorf("init replication error: %w", err)
 		}
 		defer lsdb.Close()
 	}
 	if err := ensureSchema(db); err != nil {
-		log.Fatal("migration error", zap.Error(err))
+		return fmt.Errorf("migration error: %w", err)
 	}
 
 	mux := http.NewServeMux()
-	registerHandlers(mux, log, db)
+	registerHandlers(mux, db)
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
 		Handler: h2c.NewHandler(mux, &http2.Server{}),
@@ -88,34 +87,27 @@ func run(log *zap.Logger) error {
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		sig := <-done
-		log.Warn("signal detected...", zap.Any("signal", sig))
+		slog.Warn("signal detected...", "signal", sig)
 		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()
 		server.Shutdown(ctx)
 	}()
-	log.Info("Listening...", zap.Int("port", port))
+	slog.Info("Listening...", "port", port)
 	return server.ListenAndServe()
 }
 
-func logger(dev bool) *zap.Logger {
-	var config zap.Config
-	if dev {
-		config = zap.NewDevelopmentConfig()
-		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	} else {
-		config = zap.NewProductionConfig()
+func initLogger(dev bool) {
+	var handler slog.Handler
+	opts := slog.HandlerOptions{
+		AddSource: true,
 	}
-	config.OutputPaths = []string{"stdout"}
-	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	config.DisableStacktrace = true
-	config.InitialFields = map[string]interface{}{
-		"service": serviceName,
+	switch {
+	case dev:
+		handler = slog.NewTextHandler(os.Stderr, &opts)
+	default:
+		handler = slog.NewJSONHandler(os.Stderr, &opts)
 	}
 
-	log, err := config.Build()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	return log
+	logger := slog.New(handler)
+	slog.SetDefault(logger)
 }

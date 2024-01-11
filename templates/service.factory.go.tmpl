@@ -5,8 +5,7 @@ package {{.Package}}
 import (
 	"database/sql"
 
-
-	"go.uber.org/zap"
+	"github.com/jackc/pgx/v5/pgxpool"
 
 	pb "{{ .GoModule}}/api/{{.Package}}/v1"
 	"{{ .GoModule}}/api/{{.Package}}/v1/v1connect"
@@ -14,6 +13,6 @@ import (
 
 // NewService is a constructor of a v1.{{ .Package | PascalCase}}ServiceHandler implementation.
 // Use this function to customize the server by adding middlewares to it.
-func NewService(logger *zap.Logger, querier {{if .EmitInterface}}Querier{{else}}*Queries{{end}}{{if .EmitDbArgument}}, db *sql.DB{{end}}) v1connect.{{ .Package | PascalCase}}ServiceHandler {
-	return &Service{logger: logger, querier: querier{{if .EmitDbArgument}}, db: db{{end}}}
+func NewService(querier {{if .EmitInterface}}Querier{{else}}*Queries{{end}}{{if .EmitDbArgument}}, db {{if eq .SqlPackage "pgx/v5"}}*pgxpool.Pool{{else}}*sql.DB{{end}}{{end}}) v1connect.{{ .Package | PascalCase}}ServiceHandler {
+	return &Service{querier: querier{{if .EmitDbArgument}}, db: db{{end}}}
 }
