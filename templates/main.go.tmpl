@@ -28,8 +28,7 @@ import (
 	_ "{{ .DatabaseImport}}"
 	{{if .MigrationPath}}{{if eq .SqlPackage "pgx/v5"}}_ "github.com/jackc/pgx/v5/stdlib"{{end}}{{end}}
 
-	{{range .Packages}}app_{{.Package}} "{{ .GoModule}}/{{.SrcPath}}"
-	{{end}}"{{ .GoModule}}/internal/server/litefs"
+	"{{ .GoModule}}/internal/server/litefs"
 	"{{ .GoModule}}/internal/server/litestream"
 	"{{ .GoModule}}/internal/server/instrumentation/metric"
 	"{{ .GoModule}}/internal/server/instrumentation/trace"

@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"embed"
-	"fmt"
 
 	"github.com/golang-migrate/migrate/v4"
 	driver "github.com/golang-migrate/migrate/v4/database/{{if eq .Database "postgresql"}}pgx/v5{{else if eq .Database "sqlite"}}sqlite3{{else}}{{.Database}}{{end}}"
