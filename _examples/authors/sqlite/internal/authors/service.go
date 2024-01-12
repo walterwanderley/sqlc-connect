@@ -7,7 +7,7 @@ import (
 	"database/sql"
 	"log/slog"
 
-	"github.com/bufbuild/connect-go"
+	"connectrpc.com/connect"
 
 	pb "authors/api/authors/v1"
 	"authors/api/authors/v1/v1connect"

@@ -6,15 +6,20 @@ import (
 	"database/sql"
 	"net/http"
 
-	grpcreflect "github.com/bufbuild/connect-grpcreflect-go"
+	"connectrpc.com/connect"
+	"connectrpc.com/grpcreflect"
 
 	books_v1connect "booktest/api/books/v1/v1connect"
 	books_app "booktest/internal/books"
 )
 
-func registerHandlers(mux *http.ServeMux, db *sql.DB) {
+func registerHandlers(mux *http.ServeMux, db *sql.DB, interceptors []connect.Interceptor) {
 	booksService := books_app.NewService(books_app.New(db))
-	booksPath, booksHandler := books_v1connect.NewBooksServiceHandler(booksService)
+	booksPath, booksHandler := books_v1connect.NewBooksServiceHandler(booksService,
+		connect.WithInterceptors(
+			interceptors...,
+		),
+	)
 	mux.Handle(booksPath, booksHandler)
 
 	reflector := grpcreflect.NewStaticReflector(

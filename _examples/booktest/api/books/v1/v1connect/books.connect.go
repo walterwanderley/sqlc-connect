@@ -6,9 +6,9 @@ package v1connect
 
 import (
 	v1 "booktest/api/books/v1"
+	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	connect_go "github.com/bufbuild/connect-go"
 	http "net/http"
 	strings "strings"
 )
@@ -18,7 +18,7 @@ import (
 // generated with a version of connect newer than the one compiled into your binary. You can fix the
 // problem by either regenerating this code with an older version of connect or updating the connect
 // version compiled into your binary.
-const _ = connect_go.IsAtLeastVersion0_1_0
+const _ = connect.IsAtLeastVersion1_13_0
 
 const (
 	// BooksServiceName is the fully-qualified name of the BooksService service.
@@ -57,17 +57,31 @@ const (
 	BooksServiceUpdateBookISBNProcedure = "/books.v1.BooksService/UpdateBookISBN"
 )
 
+// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
+var (
+	booksServiceServiceDescriptor                = v1.File_books_v1_books_proto.Services().ByName("BooksService")
+	booksServiceBooksByTagsMethodDescriptor      = booksServiceServiceDescriptor.Methods().ByName("BooksByTags")
+	booksServiceBooksByTitleYearMethodDescriptor = booksServiceServiceDescriptor.Methods().ByName("BooksByTitleYear")
+	booksServiceCreateAuthorMethodDescriptor     = booksServiceServiceDescriptor.Methods().ByName("CreateAuthor")
+	booksServiceCreateBookMethodDescriptor       = booksServiceServiceDescriptor.Methods().ByName("CreateBook")
+	booksServiceDeleteBookMethodDescriptor       = booksServiceServiceDescriptor.Methods().ByName("DeleteBook")
+	booksServiceGetAuthorMethodDescriptor        = booksServiceServiceDescriptor.Methods().ByName("GetAuthor")
+	booksServiceGetBookMethodDescriptor          = booksServiceServiceDescriptor.Methods().ByName("GetBook")
+	booksServiceUpdateBookMethodDescriptor       = booksServiceServiceDescriptor.Methods().ByName("UpdateBook")
+	booksServiceUpdateBookISBNMethodDescriptor   = booksServiceServiceDescriptor.Methods().ByName("UpdateBookISBN")
+)
+
 // BooksServiceClient is a client for the books.v1.BooksService service.
 type BooksServiceClient interface {
-	BooksByTags(context.Context, *connect_go.Request[v1.BooksByTagsRequest]) (*connect_go.Response[v1.BooksByTagsResponse], error)
-	BooksByTitleYear(context.Context, *connect_go.Request[v1.BooksByTitleYearRequest]) (*connect_go.Response[v1.BooksByTitleYearResponse], error)
-	CreateAuthor(context.Context, *connect_go.Request[v1.CreateAuthorRequest]) (*connect_go.Response[v1.CreateAuthorResponse], error)
-	CreateBook(context.Context, *connect_go.Request[v1.CreateBookRequest]) (*connect_go.Response[v1.CreateBookResponse], error)
-	DeleteBook(context.Context, *connect_go.Request[v1.DeleteBookRequest]) (*connect_go.Response[v1.DeleteBookResponse], error)
-	GetAuthor(context.Context, *connect_go.Request[v1.GetAuthorRequest]) (*connect_go.Response[v1.GetAuthorResponse], error)
-	GetBook(context.Context, *connect_go.Request[v1.GetBookRequest]) (*connect_go.Response[v1.GetBookResponse], error)
-	UpdateBook(context.Context, *connect_go.Request[v1.UpdateBookRequest]) (*connect_go.Response[v1.UpdateBookResponse], error)
-	UpdateBookISBN(context.Context, *connect_go.Request[v1.UpdateBookISBNRequest]) (*connect_go.Response[v1.UpdateBookISBNResponse], error)
+	BooksByTags(context.Context, *connect.Request[v1.BooksByTagsRequest]) (*connect.Response[v1.BooksByTagsResponse], error)
+	BooksByTitleYear(context.Context, *connect.Request[v1.BooksByTitleYearRequest]) (*connect.Response[v1.BooksByTitleYearResponse], error)
+	CreateAuthor(context.Context, *connect.Request[v1.CreateAuthorRequest]) (*connect.Response[v1.CreateAuthorResponse], error)
+	CreateBook(context.Context, *connect.Request[v1.CreateBookRequest]) (*connect.Response[v1.CreateBookResponse], error)
+	DeleteBook(context.Context, *connect.Request[v1.DeleteBookRequest]) (*connect.Response[v1.DeleteBookResponse], error)
+	GetAuthor(context.Context, *connect.Request[v1.GetAuthorRequest]) (*connect.Response[v1.GetAuthorResponse], error)
+	GetBook(context.Context, *connect.Request[v1.GetBookRequest]) (*connect.Response[v1.GetBookResponse], error)
+	UpdateBook(context.Context, *connect.Request[v1.UpdateBookRequest]) (*connect.Response[v1.UpdateBookResponse], error)
+	UpdateBookISBN(context.Context, *connect.Request[v1.UpdateBookISBNRequest]) (*connect.Response[v1.UpdateBookISBNResponse], error)
 }
 
 // NewBooksServiceClient constructs a client for the books.v1.BooksService service. By default, it
@@ -77,126 +91,135 @@ type BooksServiceClient interface {
 //
 // The URL supplied here should be the base URL for the Connect or gRPC server (for example,
 // http://api.acme.com or https://acme.com/grpc).
-func NewBooksServiceClient(httpClient connect_go.HTTPClient, baseURL string, opts ...connect_go.ClientOption) BooksServiceClient {
+func NewBooksServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) BooksServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &booksServiceClient{
-		booksByTags: connect_go.NewClient[v1.BooksByTagsRequest, v1.BooksByTagsResponse](
+		booksByTags: connect.NewClient[v1.BooksByTagsRequest, v1.BooksByTagsResponse](
 			httpClient,
 			baseURL+BooksServiceBooksByTagsProcedure,
-			opts...,
+			connect.WithSchema(booksServiceBooksByTagsMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
-		booksByTitleYear: connect_go.NewClient[v1.BooksByTitleYearRequest, v1.BooksByTitleYearResponse](
+		booksByTitleYear: connect.NewClient[v1.BooksByTitleYearRequest, v1.BooksByTitleYearResponse](
 			httpClient,
 			baseURL+BooksServiceBooksByTitleYearProcedure,
-			opts...,
+			connect.WithSchema(booksServiceBooksByTitleYearMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
-		createAuthor: connect_go.NewClient[v1.CreateAuthorRequest, v1.CreateAuthorResponse](
+		createAuthor: connect.NewClient[v1.CreateAuthorRequest, v1.CreateAuthorResponse](
 			httpClient,
 			baseURL+BooksServiceCreateAuthorProcedure,
-			opts...,
+			connect.WithSchema(booksServiceCreateAuthorMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
-		createBook: connect_go.NewClient[v1.CreateBookRequest, v1.CreateBookResponse](
+		createBook: connect.NewClient[v1.CreateBookRequest, v1.CreateBookResponse](
 			httpClient,
 			baseURL+BooksServiceCreateBookProcedure,
-			opts...,
+			connect.WithSchema(booksServiceCreateBookMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
-		deleteBook: connect_go.NewClient[v1.DeleteBookRequest, v1.DeleteBookResponse](
+		deleteBook: connect.NewClient[v1.DeleteBookRequest, v1.DeleteBookResponse](
 			httpClient,
 			baseURL+BooksServiceDeleteBookProcedure,
-			opts...,
+			connect.WithSchema(booksServiceDeleteBookMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
-		getAuthor: connect_go.NewClient[v1.GetAuthorRequest, v1.GetAuthorResponse](
+		getAuthor: connect.NewClient[v1.GetAuthorRequest, v1.GetAuthorResponse](
 			httpClient,
 			baseURL+BooksServiceGetAuthorProcedure,
-			opts...,
+			connect.WithSchema(booksServiceGetAuthorMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
-		getBook: connect_go.NewClient[v1.GetBookRequest, v1.GetBookResponse](
+		getBook: connect.NewClient[v1.GetBookRequest, v1.GetBookResponse](
 			httpClient,
 			baseURL+BooksServiceGetBookProcedure,
-			opts...,
+			connect.WithSchema(booksServiceGetBookMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
-		updateBook: connect_go.NewClient[v1.UpdateBookRequest, v1.UpdateBookResponse](
+		updateBook: connect.NewClient[v1.UpdateBookRequest, v1.UpdateBookResponse](
 			httpClient,
 			baseURL+BooksServiceUpdateBookProcedure,
-			opts...,
+			connect.WithSchema(booksServiceUpdateBookMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
-		updateBookISBN: connect_go.NewClient[v1.UpdateBookISBNRequest, v1.UpdateBookISBNResponse](
+		updateBookISBN: connect.NewClient[v1.UpdateBookISBNRequest, v1.UpdateBookISBNResponse](
 			httpClient,
 			baseURL+BooksServiceUpdateBookISBNProcedure,
-			opts...,
+			connect.WithSchema(booksServiceUpdateBookISBNMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
 	}
 }
 
 // booksServiceClient implements BooksServiceClient.
 type booksServiceClient struct {
-	booksByTags      *connect_go.Client[v1.BooksByTagsRequest, v1.BooksByTagsResponse]
-	booksByTitleYear *connect_go.Client[v1.BooksByTitleYearRequest, v1.BooksByTitleYearResponse]
-	createAuthor     *connect_go.Client[v1.CreateAuthorRequest, v1.CreateAuthorResponse]
-	createBook       *connect_go.Client[v1.CreateBookRequest, v1.CreateBookResponse]
-	deleteBook       *connect_go.Client[v1.DeleteBookRequest, v1.DeleteBookResponse]
-	getAuthor        *connect_go.Client[v1.GetAuthorRequest, v1.GetAuthorResponse]
-	getBook          *connect_go.Client[v1.GetBookRequest, v1.GetBookResponse]
-	updateBook       *connect_go.Client[v1.UpdateBookRequest, v1.UpdateBookResponse]
-	updateBookISBN   *connect_go.Client[v1.UpdateBookISBNRequest, v1.UpdateBookISBNResponse]
+	booksByTags      *connect.Client[v1.BooksByTagsRequest, v1.BooksByTagsResponse]
+	booksByTitleYear *connect.Client[v1.BooksByTitleYearRequest, v1.BooksByTitleYearResponse]
+	createAuthor     *connect.Client[v1.CreateAuthorRequest, v1.CreateAuthorResponse]
+	createBook       *connect.Client[v1.CreateBookRequest, v1.CreateBookResponse]
+	deleteBook       *connect.Client[v1.DeleteBookRequest, v1.DeleteBookResponse]
+	getAuthor        *connect.Client[v1.GetAuthorRequest, v1.GetAuthorResponse]
+	getBook          *connect.Client[v1.GetBookRequest, v1.GetBookResponse]
+	updateBook       *connect.Client[v1.UpdateBookRequest, v1.UpdateBookResponse]
+	updateBookISBN   *connect.Client[v1.UpdateBookISBNRequest, v1.UpdateBookISBNResponse]
 }
 
 // BooksByTags calls books.v1.BooksService.BooksByTags.
-func (c *booksServiceClient) BooksByTags(ctx context.Context, req *connect_go.Request[v1.BooksByTagsRequest]) (*connect_go.Response[v1.BooksByTagsResponse], error) {
+func (c *booksServiceClient) BooksByTags(ctx context.Context, req *connect.Request[v1.BooksByTagsRequest]) (*connect.Response[v1.BooksByTagsResponse], error) {
 	return c.booksByTags.CallUnary(ctx, req)
 }
 
 // BooksByTitleYear calls books.v1.BooksService.BooksByTitleYear.
-func (c *booksServiceClient) BooksByTitleYear(ctx context.Context, req *connect_go.Request[v1.BooksByTitleYearRequest]) (*connect_go.Response[v1.BooksByTitleYearResponse], error) {
+func (c *booksServiceClient) BooksByTitleYear(ctx context.Context, req *connect.Request[v1.BooksByTitleYearRequest]) (*connect.Response[v1.BooksByTitleYearResponse], error) {
 	return c.booksByTitleYear.CallUnary(ctx, req)
 }
 
 // CreateAuthor calls books.v1.BooksService.CreateAuthor.
-func (c *booksServiceClient) CreateAuthor(ctx context.Context, req *connect_go.Request[v1.CreateAuthorRequest]) (*connect_go.Response[v1.CreateAuthorResponse], error) {
+func (c *booksServiceClient) CreateAuthor(ctx context.Context, req *connect.Request[v1.CreateAuthorRequest]) (*connect.Response[v1.CreateAuthorResponse], error) {
 	return c.createAuthor.CallUnary(ctx, req)
 }
 
 // CreateBook calls books.v1.BooksService.CreateBook.
-func (c *booksServiceClient) CreateBook(ctx context.Context, req *connect_go.Request[v1.CreateBookRequest]) (*connect_go.Response[v1.CreateBookResponse], error) {
+func (c *booksServiceClient) CreateBook(ctx context.Context, req *connect.Request[v1.CreateBookRequest]) (*connect.Response[v1.CreateBookResponse], error) {
 	return c.createBook.CallUnary(ctx, req)
 }
 
 // DeleteBook calls books.v1.BooksService.DeleteBook.
-func (c *booksServiceClient) DeleteBook(ctx context.Context, req *connect_go.Request[v1.DeleteBookRequest]) (*connect_go.Response[v1.DeleteBookResponse], error) {
+func (c *booksServiceClient) DeleteBook(ctx context.Context, req *connect.Request[v1.DeleteBookRequest]) (*connect.Response[v1.DeleteBookResponse], error) {
 	return c.deleteBook.CallUnary(ctx, req)
 }
 
 // GetAuthor calls books.v1.BooksService.GetAuthor.
-func (c *booksServiceClient) GetAuthor(ctx context.Context, req *connect_go.Request[v1.GetAuthorRequest]) (*connect_go.Response[v1.GetAuthorResponse], error) {
+func (c *booksServiceClient) GetAuthor(ctx context.Context, req *connect.Request[v1.GetAuthorRequest]) (*connect.Response[v1.GetAuthorResponse], error) {
 	return c.getAuthor.CallUnary(ctx, req)
 }
 
 // GetBook calls books.v1.BooksService.GetBook.
-func (c *booksServiceClient) GetBook(ctx context.Context, req *connect_go.Request[v1.GetBookRequest]) (*connect_go.Response[v1.GetBookResponse], error) {
+func (c *booksServiceClient) GetBook(ctx context.Context, req *connect.Request[v1.GetBookRequest]) (*connect.Response[v1.GetBookResponse], error) {
 	return c.getBook.CallUnary(ctx, req)
 }
 
 // UpdateBook calls books.v1.BooksService.UpdateBook.
-func (c *booksServiceClient) UpdateBook(ctx context.Context, req *connect_go.Request[v1.UpdateBookRequest]) (*connect_go.Response[v1.UpdateBookResponse], error) {
+func (c *booksServiceClient) UpdateBook(ctx context.Context, req *connect.Request[v1.UpdateBookRequest]) (*connect.Response[v1.UpdateBookResponse], error) {
 	return c.updateBook.CallUnary(ctx, req)
 }
 
 // UpdateBookISBN calls books.v1.BooksService.UpdateBookISBN.
-func (c *booksServiceClient) UpdateBookISBN(ctx context.Context, req *connect_go.Request[v1.UpdateBookISBNRequest]) (*connect_go.Response[v1.UpdateBookISBNResponse], error) {
+func (c *booksServiceClient) UpdateBookISBN(ctx context.Context, req *connect.Request[v1.UpdateBookISBNRequest]) (*connect.Response[v1.UpdateBookISBNResponse], error) {
 	return c.updateBookISBN.CallUnary(ctx, req)
 }
 
 // BooksServiceHandler is an implementation of the books.v1.BooksService service.
 type BooksServiceHandler interface {
-	BooksByTags(context.Context, *connect_go.Request[v1.BooksByTagsRequest]) (*connect_go.Response[v1.BooksByTagsResponse], error)
-	BooksByTitleYear(context.Context, *connect_go.Request[v1.BooksByTitleYearRequest]) (*connect_go.Response[v1.BooksByTitleYearResponse], error)
-	CreateAuthor(context.Context, *connect_go.Request[v1.CreateAuthorRequest]) (*connect_go.Response[v1.CreateAuthorResponse], error)
-	CreateBook(context.Context, *connect_go.Request[v1.CreateBookRequest]) (*connect_go.Response[v1.CreateBookResponse], error)
-	DeleteBook(context.Context, *connect_go.Request[v1.DeleteBookRequest]) (*connect_go.Response[v1.DeleteBookResponse], error)
-	GetAuthor(context.Context, *connect_go.Request[v1.GetAuthorRequest]) (*connect_go.Response[v1.GetAuthorResponse], error)
-	GetBook(context.Context, *connect_go.Request[v1.GetBookRequest]) (*connect_go.Response[v1.GetBookResponse], error)
-	UpdateBook(context.Context, *connect_go.Request[v1.UpdateBookRequest]) (*connect_go.Response[v1.UpdateBookResponse], error)
-	UpdateBookISBN(context.Context, *connect_go.Request[v1.UpdateBookISBNRequest]) (*connect_go.Response[v1.UpdateBookISBNResponse], error)
+	BooksByTags(context.Context, *connect.Request[v1.BooksByTagsRequest]) (*connect.Response[v1.BooksByTagsResponse], error)
+	BooksByTitleYear(context.Context, *connect.Request[v1.BooksByTitleYearRequest]) (*connect.Response[v1.BooksByTitleYearResponse], error)
+	CreateAuthor(context.Context, *connect.Request[v1.CreateAuthorRequest]) (*connect.Response[v1.CreateAuthorResponse], error)
+	CreateBook(context.Context, *connect.Request[v1.CreateBookRequest]) (*connect.Response[v1.CreateBookResponse], error)
+	DeleteBook(context.Context, *connect.Request[v1.DeleteBookRequest]) (*connect.Response[v1.DeleteBookResponse], error)
+	GetAuthor(context.Context, *connect.Request[v1.GetAuthorRequest]) (*connect.Response[v1.GetAuthorResponse], error)
+	GetBook(context.Context, *connect.Request[v1.GetBookRequest]) (*connect.Response[v1.GetBookResponse], error)
+	UpdateBook(context.Context, *connect.Request[v1.UpdateBookRequest]) (*connect.Response[v1.UpdateBookResponse], error)
+	UpdateBookISBN(context.Context, *connect.Request[v1.UpdateBookISBNRequest]) (*connect.Response[v1.UpdateBookISBNResponse], error)
 }
 
 // NewBooksServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -204,51 +227,60 @@ type BooksServiceHandler interface {
 //
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
-func NewBooksServiceHandler(svc BooksServiceHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	booksServiceBooksByTagsHandler := connect_go.NewUnaryHandler(
+func NewBooksServiceHandler(svc BooksServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	booksServiceBooksByTagsHandler := connect.NewUnaryHandler(
 		BooksServiceBooksByTagsProcedure,
 		svc.BooksByTags,
-		opts...,
+		connect.WithSchema(booksServiceBooksByTagsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
-	booksServiceBooksByTitleYearHandler := connect_go.NewUnaryHandler(
+	booksServiceBooksByTitleYearHandler := connect.NewUnaryHandler(
 		BooksServiceBooksByTitleYearProcedure,
 		svc.BooksByTitleYear,
-		opts...,
+		connect.WithSchema(booksServiceBooksByTitleYearMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
-	booksServiceCreateAuthorHandler := connect_go.NewUnaryHandler(
+	booksServiceCreateAuthorHandler := connect.NewUnaryHandler(
 		BooksServiceCreateAuthorProcedure,
 		svc.CreateAuthor,
-		opts...,
+		connect.WithSchema(booksServiceCreateAuthorMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
-	booksServiceCreateBookHandler := connect_go.NewUnaryHandler(
+	booksServiceCreateBookHandler := connect.NewUnaryHandler(
 		BooksServiceCreateBookProcedure,
 		svc.CreateBook,
-		opts...,
+		connect.WithSchema(booksServiceCreateBookMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
-	booksServiceDeleteBookHandler := connect_go.NewUnaryHandler(
+	booksServiceDeleteBookHandler := connect.NewUnaryHandler(
 		BooksServiceDeleteBookProcedure,
 		svc.DeleteBook,
-		opts...,
+		connect.WithSchema(booksServiceDeleteBookMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
-	booksServiceGetAuthorHandler := connect_go.NewUnaryHandler(
+	booksServiceGetAuthorHandler := connect.NewUnaryHandler(
 		BooksServiceGetAuthorProcedure,
 		svc.GetAuthor,
-		opts...,
+		connect.WithSchema(booksServiceGetAuthorMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
-	booksServiceGetBookHandler := connect_go.NewUnaryHandler(
+	booksServiceGetBookHandler := connect.NewUnaryHandler(
 		BooksServiceGetBookProcedure,
 		svc.GetBook,
-		opts...,
+		connect.WithSchema(booksServiceGetBookMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
-	booksServiceUpdateBookHandler := connect_go.NewUnaryHandler(
+	booksServiceUpdateBookHandler := connect.NewUnaryHandler(
 		BooksServiceUpdateBookProcedure,
 		svc.UpdateBook,
-		opts...,
+		connect.WithSchema(booksServiceUpdateBookMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
-	booksServiceUpdateBookISBNHandler := connect_go.NewUnaryHandler(
+	booksServiceUpdateBookISBNHandler := connect.NewUnaryHandler(
 		BooksServiceUpdateBookISBNProcedure,
 		svc.UpdateBookISBN,
-		opts...,
+		connect.WithSchema(booksServiceUpdateBookISBNMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
 	return "/books.v1.BooksService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
@@ -279,38 +311,38 @@ func NewBooksServiceHandler(svc BooksServiceHandler, opts ...connect_go.HandlerO
 // UnimplementedBooksServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedBooksServiceHandler struct{}
 
-func (UnimplementedBooksServiceHandler) BooksByTags(context.Context, *connect_go.Request[v1.BooksByTagsRequest]) (*connect_go.Response[v1.BooksByTagsResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("books.v1.BooksService.BooksByTags is not implemented"))
+func (UnimplementedBooksServiceHandler) BooksByTags(context.Context, *connect.Request[v1.BooksByTagsRequest]) (*connect.Response[v1.BooksByTagsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("books.v1.BooksService.BooksByTags is not implemented"))
 }
 
-func (UnimplementedBooksServiceHandler) BooksByTitleYear(context.Context, *connect_go.Request[v1.BooksByTitleYearRequest]) (*connect_go.Response[v1.BooksByTitleYearResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("books.v1.BooksService.BooksByTitleYear is not implemented"))
+func (UnimplementedBooksServiceHandler) BooksByTitleYear(context.Context, *connect.Request[v1.BooksByTitleYearRequest]) (*connect.Response[v1.BooksByTitleYearResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("books.v1.BooksService.BooksByTitleYear is not implemented"))
 }
 
-func (UnimplementedBooksServiceHandler) CreateAuthor(context.Context, *connect_go.Request[v1.CreateAuthorRequest]) (*connect_go.Response[v1.CreateAuthorResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("books.v1.BooksService.CreateAuthor is not implemented"))
+func (UnimplementedBooksServiceHandler) CreateAuthor(context.Context, *connect.Request[v1.CreateAuthorRequest]) (*connect.Response[v1.CreateAuthorResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("books.v1.BooksService.CreateAuthor is not implemented"))
 }
 
-func (UnimplementedBooksServiceHandler) CreateBook(context.Context, *connect_go.Request[v1.CreateBookRequest]) (*connect_go.Response[v1.CreateBookResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("books.v1.BooksService.CreateBook is not implemented"))
+func (UnimplementedBooksServiceHandler) CreateBook(context.Context, *connect.Request[v1.CreateBookRequest]) (*connect.Response[v1.CreateBookResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("books.v1.BooksService.CreateBook is not implemented"))
 }
 
-func (UnimplementedBooksServiceHandler) DeleteBook(context.Context, *connect_go.Request[v1.DeleteBookRequest]) (*connect_go.Response[v1.DeleteBookResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("books.v1.BooksService.DeleteBook is not implemented"))
+func (UnimplementedBooksServiceHandler) DeleteBook(context.Context, *connect.Request[v1.DeleteBookRequest]) (*connect.Response[v1.DeleteBookResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("books.v1.BooksService.DeleteBook is not implemented"))
 }
 
-func (UnimplementedBooksServiceHandler) GetAuthor(context.Context, *connect_go.Request[v1.GetAuthorRequest]) (*connect_go.Response[v1.GetAuthorResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("books.v1.BooksService.GetAuthor is not implemented"))
+func (UnimplementedBooksServiceHandler) GetAuthor(context.Context, *connect.Request[v1.GetAuthorRequest]) (*connect.Response[v1.GetAuthorResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("books.v1.BooksService.GetAuthor is not implemented"))
 }
 
-func (UnimplementedBooksServiceHandler) GetBook(context.Context, *connect_go.Request[v1.GetBookRequest]) (*connect_go.Response[v1.GetBookResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("books.v1.BooksService.GetBook is not implemented"))
+func (UnimplementedBooksServiceHandler) GetBook(context.Context, *connect.Request[v1.GetBookRequest]) (*connect.Response[v1.GetBookResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("books.v1.BooksService.GetBook is not implemented"))
 }
 
-func (UnimplementedBooksServiceHandler) UpdateBook(context.Context, *connect_go.Request[v1.UpdateBookRequest]) (*connect_go.Response[v1.UpdateBookResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("books.v1.BooksService.UpdateBook is not implemented"))
+func (UnimplementedBooksServiceHandler) UpdateBook(context.Context, *connect.Request[v1.UpdateBookRequest]) (*connect.Response[v1.UpdateBookResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("books.v1.BooksService.UpdateBook is not implemented"))
 }
 
-func (UnimplementedBooksServiceHandler) UpdateBookISBN(context.Context, *connect_go.Request[v1.UpdateBookISBNRequest]) (*connect_go.Response[v1.UpdateBookISBNResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("books.v1.BooksService.UpdateBookISBN is not implemented"))
+func (UnimplementedBooksServiceHandler) UpdateBookISBN(context.Context, *connect.Request[v1.UpdateBookISBNRequest]) (*connect.Response[v1.UpdateBookISBNResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("books.v1.BooksService.UpdateBookISBN is not implemented"))
 }

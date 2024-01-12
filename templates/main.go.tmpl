@@ -15,36 +15,51 @@ import (
 	"runtime"
 	"syscall"
 
+	"connectrpc.com/connect"
+	"connectrpc.com/otelconnect"
 	"go.uber.org/automaxprocs/maxprocs"
-
 	"golang.org/x/net/http2"
   	"golang.org/x/net/http2/h2c"
-
 	// database driver
-	{{if eq .Database "mysql"}}_ "github.com/go-sql-driver/mysql"{{else if eq .Database "sqlite"}}_ "github.com/mattn/go-sqlite3"{{else}}{{if eq .SqlPackage "pgx/v5"}}"github.com/jackc/pgx/v5/pgxpool"{{else}}_ "github.com/jackc/pgx/v5/stdlib"{{end}}{{end}}
+	_ "{{ .DatabaseImport}}"
 	{{if .MigrationPath}}{{if eq .SqlPackage "pgx/v5"}}_ "github.com/jackc/pgx/v5/stdlib"{{end}}{{end}}
 
 	{{range .Packages}}app_{{.Package}} "{{ .GoModule}}/{{.SrcPath}}"
-	{{end}}
+	{{end}}"{{ .GoModule}}/internal/server/litefs"
+	"{{ .GoModule}}/internal/server/litestream"
+	"{{ .GoModule}}/internal/server/instrumentation/metric"
+	"{{ .GoModule}}/internal/server/instrumentation/trace"
 )
 
 {{if .Args}}//go:generate {{ .Args}}{{end}}
-
+{{if .LiteFS}}
+const (
+	serviceName    = "{{ .GoModule}}"
+	forwardTimeout = 10 * time.Second
+){{else}}
 const serviceName = "{{ .GoModule}}"
-
+{{end}}
 var (
-	dbURL          string
-	{{if eq .Database "sqlite"}}replicationURL string{{end}}
-	port           int
+	dbURL string	
+	port, prometheusPort int
+	{{if .Litestream}}replicationURL string{{end}}
+	{{if .DistributedTracing}}otlpEndpoint string{{end}}
+	{{if .LiteFS}}litefsConfig   litefs.Config
+	liteFS         *litefs.LiteFS{{end}}
 )
 
 func main() {
 	var dev bool
 	flag.StringVar(&dbURL, "db", "", "The Database connection URL")
 	flag.IntVar(&port, "port", 5000, "The server port")
+	flag.IntVar(&prometheusPort, "prometheus-port", 0, "The metrics server port")
 	flag.BoolVar(&dev, "dev", false, "Set logger to development mode")
-	{{if eq .Database "sqlite"}}flag.StringVar(&replicationURL, "replication", "", "S3 replication URL"){{end}}
+	{{if .DistributedTracing}}flag.StringVar(&otlpEndpoint, "otlp-endpoint", "", "The Open Telemetry Protocol Endpoint (example: localhost:4317)"){{end}}
+	{{if .Litestream}}flag.StringVar(&replicationURL, "replication", "", "S3 replication URL"){{end}}
+	{{if .LiteFS}}litefs.SetFlags(&litefsConfig){{end}}
 	flag.Parse()
+
+	{{if .LiteFS}}dbURL = filepath.Join(litefsConfig.MountDir, dbURL){{end}}
 
 	initLogger(dev)
 	
@@ -55,23 +70,62 @@ func main() {
 }
 
 func run() error {
-	if _, err := maxprocs.Set(); err != nil {
+	_, err := maxprocs.Set()
+	if err != nil {
 		slog.Warn("startup", "error", err)
 	}
 	slog.Info("startup", "GOMAXPROCS", runtime.GOMAXPROCS(0))
 
-	{{if eq .SqlPackage "pgx/v5"}}
-	db, err := pgxpool.New(context.Background(), dbURL)
+	{{if .DistributedTracing}}
+	var db {{if eq .SqlPackage "pgx/v5"}}*pgxpool.Pool{{else}}*sql.DB{{end}}
+	if otlpEndpoint != "" {
+		{{if eq .SqlPackage "pgx/v5"}}
+		dbCfg, err := pgxpool.ParseConfig(dbURL)
+		if err != nil {
+    		return err
+		}
+		dbCfg.ConnConfig.Tracer = otelpgx.NewTracer()
+		db, err = pgxpool.NewWithConfig(context.Background(), dbCfg)
+		if err != nil {
+    		return err
+		}
+		{{else}}
+		db, err = otelsql.Open("{{ .DatabaseDriver}}", dbURL, otelsql.WithAttributes(
+			{{if eq .Database "mysql"}}semconv.DBSystemMySQL{{else if eq .Database "sqlite"}}semconv.DBSystemSqlite{{else}}semconv.DBSystemPostgreSQL{{end}},
+		))
+		if err != nil {			
+			return err
+		}
+
+		err = otelsql.RegisterDBStatsMetrics(db, otelsql.WithAttributes(
+			{{if eq .Database "mysql"}}semconv.DBSystemMySQL{{else if eq .Database "sqlite"}}semconv.DBSystemSqlite{{else}}semconv.DBSystemPostgreSQL{{end}},
+		))
+		if err != nil {
+			return err
+		}{{end}}
+	} else {
+	    {{if eq .SqlPackage "pgx/v5"}}db, err = pgxpool.New(context.Background(), dbURL)
+		{{else}}	
+		db, err = sql.Open("{{if eq .Database "mysql"}}mysql{{else if eq .Database "sqlite"}}sqlite3{{else}}pgx{{end}}", dbURL)
+		{{end}}if err != nil {
+			return err
+		}
+	}
+	defer db.Close()
 	{{else}}
-	db, err := sql.Open("{{if eq .Database "mysql"}}mysql{{else if eq .Database "sqlite"}}sqlite3{{else}}pgx{{end}}", dbURL)
+	{{if eq .SqlPackage "pgx/v5"}}
+		db, err := pgxpool.New(context.Background(), dbURL)
+	{{else}}
+	db, err := sql.Open("{{ .DatabaseDriver}}", dbURL)
 	{{end}}if err != nil {
 		return err
 	}
 	defer db.Close()
-	{{if eq .Database "sqlite"}}
+	{{end}}
+	{{if .Litestream}}
 	if replicationURL != "" {
 		slog.Info("replication", "url", replicationURL)
-		lsdb, err := replicate(context.Background(), dbURL, replicationURL)
+		lsdb, err := litestream.Replicate(context.Background(), dbURL, replicationURL)
 		if err != nil {
 			return fmt.Errorf("init replication error: %w", err)
 		}
@@ -91,12 +145,58 @@ func run() error {
 	}{{end}}{{end}}
 
 	mux := http.NewServeMux()
-	registerHandlers(mux, db)
+	var interceptors []connect.Interceptor
+	if prometheusPort > 0{{if .DistributedTracing}} || otlpEndpoint != ""{{end}} {
+		observability, err := otelconnect.NewInterceptor()
+		if err != nil {
+			return err
+		}
+		interceptors = append(interceptors, observability)
+	}
+	registerHandlers(mux, db, interceptors)
+	{{if .LiteFS}}	
+	if litefsConfig.MountDir != "" {
+		err := litefsConfig.Validate()
+		if err != nil {
+			return fmt.Errorf("liteFS parameters validation: %w", err)
+		}
+
+		liteFS, err = litefs.Start(litefsConfig)
+		if err != nil {
+			return fmt.Errorf("cannot start LiteFS: %w", err)
+		}
+		defer liteFS.Close()
+
+		<-liteFS.ReadyCh()
+		slog.Info("LiteFS cluster is ready")
+	}
+	handler := liteFS.ForwardToLeader(forwardTimeout, "POST", "PUT", "PATCH", "DELETE")(mux)
+	handler = liteFS.ConsistentReader(forwardTimeout, "GET")(handler)
+	server := &http.Server{
+		Addr:    fmt.Sprintf(":%d", port),
+		Handler: h2c.NewHandler(handler, &http2.Server{}),
+		// Please, configure timeouts!
+	}{{else}}
 	server := &http.Server{
     	Addr: fmt.Sprintf(":%d", port),
     	Handler: h2c.NewHandler(mux, &http2.Server{}),
     	// Please, configure timeouts!
   	}
+	{{end}}
+	if prometheusPort > 0 {
+		err := metric.Init(prometheusPort, serviceName)
+		if err != nil {
+			return err
+		}
+	}
+	{{if .DistributedTracing}}
+	if otlpEndpoint != "" {
+		shutdown, err := trace.Init(context.Background(), serviceName, otlpEndpoint)
+		if err != nil {
+			return err
+		}
+		defer shutdown()
+	}{{end}}
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)

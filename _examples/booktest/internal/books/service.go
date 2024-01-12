@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/bufbuild/connect-go"
+	"connectrpc.com/connect"
 
 	pb "booktest/api/books/v1"
 	"booktest/api/books/v1/v1connect"
-	"booktest/validation"
+	"booktest/internal/validation"
 )
 
 type Service struct {

@@ -5,16 +5,21 @@ package main
 import (
 	"net/http"
 
-	grpcreflect "github.com/bufbuild/connect-grpcreflect-go"
+	"connectrpc.com/connect"
+	"connectrpc.com/grpcreflect"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	authors_v1connect "authors/api/authors/v1/v1connect"
 	authors_app "authors/internal/authors"
 )
 
-func registerHandlers(mux *http.ServeMux, db *pgxpool.Pool) {
+func registerHandlers(mux *http.ServeMux, db *pgxpool.Pool, interceptors []connect.Interceptor) {
 	authorsService := authors_app.NewService(authors_app.New(), db)
-	authorsPath, authorsHandler := authors_v1connect.NewAuthorsServiceHandler(authorsService)
+	authorsPath, authorsHandler := authors_v1connect.NewAuthorsServiceHandler(authorsService,
+		connect.WithInterceptors(
+			interceptors...,
+		),
+	)
 	mux.Handle(authorsPath, authorsHandler)
 
 	reflector := grpcreflect.NewStaticReflector(

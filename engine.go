@@ -14,9 +14,9 @@ import (
 	"text/template"
 
 	"github.com/walterwanderley/sqlc-grpc/converter"
+	"github.com/walterwanderley/sqlc-grpc/metadata"
 	"golang.org/x/tools/imports"
 
-	"github.com/walterwanderley/sqlc-connect/metadata"
 	"github.com/walterwanderley/sqlc-connect/templates"
 )
 
@@ -30,6 +30,16 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 		newPath := strings.TrimSuffix(path, ".tmpl")
 
 		if d.IsDir() {
+			if strings.HasSuffix(newPath, "trace") && !def.DistributedTracing {
+				return nil
+			}
+			if strings.HasSuffix(newPath, "litestream") && !(def.Database() == "sqlite" && def.Litestream) {
+				return nil
+			}
+
+			if strings.HasSuffix(newPath, "litefs") && !(def.Database() == "sqlite" && def.LiteFS) {
+				return nil
+			}
 			if _, err := os.Stat(newPath); os.IsNotExist(err) {
 				err := os.MkdirAll(newPath, 0750)
 				if err != nil {
@@ -126,11 +136,19 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 			return nil
 		}
 
+		if strings.HasSuffix(newPath, "tracing.go") && !def.DistributedTracing {
+			return nil
+		}
+
 		if strings.HasSuffix(newPath, "migration.go") && def.MigrationPath == "" {
 			return nil
 		}
 
-		if strings.HasSuffix(newPath, "replication.go") && def.Database() != "sqlite" {
+		if strings.HasSuffix(newPath, "litestream.go") && !(def.Database() == "sqlite" && def.Litestream) {
+			return nil
+		}
+
+		if (strings.HasSuffix(newPath, "litefs.go") || strings.HasSuffix(newPath, "forward.go")) && !(def.Database() == "sqlite" && def.LiteFS) {
 			return nil
 		}
 
@@ -170,12 +188,7 @@ func genFromTemplate(name, tmp string, data interface{}, goSource bool, outPath 
 
 	var b bytes.Buffer
 
-	funcMap := template.FuncMap{
-		"PascalCase": converter.ToPascalCase,
-		"SnakeCase":  converter.ToSnakeCase,
-	}
-
-	t, err := template.New(name).Funcs(funcMap).Parse(tmp)
+	t, err := template.New(name).Funcs(templates.Funcs).Parse(tmp)
 	if err != nil {
 		return err
 	}

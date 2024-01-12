@@ -16,30 +16,39 @@ import (
 	"syscall"
 	"time"
 
+	"connectrpc.com/connect"
+	"connectrpc.com/otelconnect"
+	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	"go.uber.org/automaxprocs/maxprocs"
-
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
 	// database driver
+	"github.com/XSAM/otelsql"
 	_ "github.com/jackc/pgx/v5/stdlib"
+
+	"booktest/internal/server/instrumentation/metric"
+	"booktest/internal/server/instrumentation/trace"
 )
 
-//go:generate sqlc-connect -m booktest -append
+//go:generate sqlc-connect -m booktest -tracing -append
 
 const serviceName = "booktest"
 
 var (
-	dbURL string
+	dbURL                string
+	port, prometheusPort int
 
-	port int
+	otlpEndpoint string
 )
 
 func main() {
 	var dev bool
 	flag.StringVar(&dbURL, "db", "", "The Database connection URL")
 	flag.IntVar(&port, "port", 5000, "The server port")
+	flag.IntVar(&prometheusPort, "prometheus-port", 0, "The metrics server port")
 	flag.BoolVar(&dev, "dev", false, "Set logger to development mode")
+	flag.StringVar(&otlpEndpoint, "otlp-endpoint", "", "The Open Telemetry Protocol Endpoint (example: localhost:4317)")
 
 	flag.Parse()
 
@@ -52,23 +61,67 @@ func main() {
 }
 
 func run() error {
-	if _, err := maxprocs.Set(); err != nil {
+	_, err := maxprocs.Set()
+	if err != nil {
 		slog.Warn("startup", "error", err)
 	}
 	slog.Info("startup", "GOMAXPROCS", runtime.GOMAXPROCS(0))
 
-	db, err := sql.Open("pgx", dbURL)
-	if err != nil {
-		return err
+	var db *sql.DB
+	if otlpEndpoint != "" {
+
+		db, err = otelsql.Open("pgx", dbURL, otelsql.WithAttributes(
+			semconv.DBSystemPostgreSQL,
+		))
+		if err != nil {
+			return err
+		}
+
+		err = otelsql.RegisterDBStatsMetrics(db, otelsql.WithAttributes(
+			semconv.DBSystemPostgreSQL,
+		))
+		if err != nil {
+			return err
+		}
+	} else {
+
+		db, err = sql.Open("pgx", dbURL)
+		if err != nil {
+			return err
+		}
 	}
 	defer db.Close()
 
 	mux := http.NewServeMux()
-	registerHandlers(mux, db)
+	var interceptors []connect.Interceptor
+	if prometheusPort > 0 || otlpEndpoint != "" {
+		observability, err := otelconnect.NewInterceptor()
+		if err != nil {
+			return err
+		}
+		interceptors = append(interceptors, observability)
+	}
+	registerHandlers(mux, db, interceptors)
+
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
 		Handler: h2c.NewHandler(mux, &http2.Server{}),
 		// Please, configure timeouts!
+	}
+
+	if prometheusPort > 0 {
+		err := metric.Init(prometheusPort, serviceName)
+		if err != nil {
+			return err
+		}
+	}
+
+	if otlpEndpoint != "" {
+		shutdown, err := trace.Init(context.Background(), serviceName, otlpEndpoint)
+		if err != nil {
+			return err
+		}
+		defer shutdown()
 	}
 
 	done := make(chan os.Signal, 1)

@@ -13,17 +13,20 @@ import (
 
 	"golang.org/x/mod/modfile"
 
-	"github.com/walterwanderley/sqlc-connect/metadata"
 	"github.com/walterwanderley/sqlc-grpc/config"
+	"github.com/walterwanderley/sqlc-grpc/metadata"
 )
 
 var (
-	module        string
-	ignoreQueries string
-	migrationPath string
-	appendMode    bool
-	showVersion   bool
-	help          bool
+	module             string
+	ignoreQueries      string
+	migrationPath      string
+	liteFS             bool
+	litestream         bool
+	distributedTracing bool
+	appendMode         bool
+	showVersion        bool
+	help               bool
 )
 
 func main() {
@@ -33,6 +36,9 @@ func main() {
 	flag.StringVar(&module, "m", "my-project", "Go module name if there are no go.mod")
 	flag.StringVar(&ignoreQueries, "i", "", "Comma separated list (regex) of queries to ignore")
 	flag.StringVar(&migrationPath, "migration-path", "", "Path to migration directory")
+	flag.BoolVar(&liteFS, "litefs", false, "Enable support to LiteFS")
+	flag.BoolVar(&litestream, "litestream", false, "Enable support to Litestream")
+	flag.BoolVar(&distributedTracing, "tracing", false, "Enable support to distributed tracing with Open Telemetry")
 	flag.Parse()
 
 	if help {
@@ -61,10 +67,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if len(cfg.Packages) == 0 {
-		log.Fatal("no packages")
-	}
-
 	queriesToIgnore := make([]*regexp.Regexp, 0)
 	for _, queryName := range strings.Split(ignoreQueries, ",") {
 		s := strings.TrimSpace(queryName)
@@ -85,10 +87,13 @@ func main() {
 	}
 
 	def := metadata.Definition{
-		Args:          args,
-		GoModule:      module,
-		MigrationPath: migrationPath,
-		Packages:      make([]*metadata.Package, 0),
+		Args:               args,
+		GoModule:           module,
+		MigrationPath:      migrationPath,
+		Packages:           make([]*metadata.Package, 0),
+		LiteFS:             liteFS,
+		Litestream:         litestream,
+		DistributedTracing: distributedTracing,
 	}
 
 	for _, p := range cfg.Packages {
@@ -121,8 +126,8 @@ func main() {
 		return strings.Compare(def.Packages[i].Package, def.Packages[j].Package) < 0
 	})
 
-	if len(def.Packages) == 0 {
-		log.Fatal("No services found, verify the -i parameter")
+	if err := def.Validate(); err != nil {
+		log.Fatal(err.Error())
 	}
 
 	wd, err := os.Getwd()
@@ -158,7 +163,7 @@ func postProcess(def *metadata.Definition, workingDirectory string) {
 	execCommand("go mod init " + def.GoModule)
 	execCommand("go mod tidy")
 	execCommand("go install google.golang.org/protobuf/cmd/protoc-gen-go")
-	execCommand("go install github.com/bufbuild/connect-go/cmd/protoc-gen-connect-go")
+	execCommand("go install connectrpc.com/connect/cmd/protoc-gen-connect-go")
 	execCommand("go install github.com/bufbuild/buf/cmd/buf")
 	log.Println("Compiling protocol buffers...")
 	if err := os.Chdir("proto"); err != nil {

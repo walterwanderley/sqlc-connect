@@ -10,7 +10,7 @@ import (
 	"log/slog"
 	"net"
 
-    "github.com/bufbuild/connect-go"
+    "connectrpc.com/connect"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -20,7 +20,7 @@ import (
 
 	pb "{{ .GoModule}}/api/{{.Package}}/v1"
 	"{{ .GoModule}}/api/{{.Package}}/v1/v1connect"
-	"{{ .GoModule}}/validation"
+	"{{ .GoModule}}/internal/validation"
 )
 	
 type Service struct {
@@ -32,14 +32,14 @@ type Service struct {
 {{$emitDbArgument := .EmitDbArgument}}
 {{ range .Services }}
 func (s *Service) {{.Name}}(ctx context.Context, req *connect.Request[pb.{{.Name}}Request]) (*connect.Response[pb.{{.Name}}Response], error) {
-	{{ range .InputGrpc}}{{ .}}
+	{{ range . | Input}}{{ .}}
 	{{end}}
 	{{if not .EmptyOutput}}result, {{end}}err := s.querier.{{ .Name}}(ctx{{if $emitDbArgument}}, s.db{{end}}{{ .ParamsCallDatabase}})
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "{{.Name}}")			
 		return nil, err
 	}
-	{{ range .OutputGrpc}}{{ .}}
+	{{ range . | Output}}{{ .}}
 	{{end -}}
 }
 {{ end }}

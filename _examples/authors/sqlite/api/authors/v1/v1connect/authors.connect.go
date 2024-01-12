@@ -6,9 +6,9 @@ package v1connect
 
 import (
 	v1 "authors/api/authors/v1"
+	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	connect_go "github.com/bufbuild/connect-go"
 	http "net/http"
 	strings "strings"
 )
@@ -18,7 +18,7 @@ import (
 // generated with a version of connect newer than the one compiled into your binary. You can fix the
 // problem by either regenerating this code with an older version of connect or updating the connect
 // version compiled into your binary.
-const _ = connect_go.IsAtLeastVersion0_1_0
+const _ = connect.IsAtLeastVersion1_13_0
 
 const (
 	// AuthorsServiceName is the fully-qualified name of the AuthorsService service.
@@ -47,12 +47,21 @@ const (
 	AuthorsServiceListAuthorsProcedure = "/authors.v1.AuthorsService/ListAuthors"
 )
 
+// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
+var (
+	authorsServiceServiceDescriptor            = v1.File_authors_v1_authors_proto.Services().ByName("AuthorsService")
+	authorsServiceCreateAuthorMethodDescriptor = authorsServiceServiceDescriptor.Methods().ByName("CreateAuthor")
+	authorsServiceDeleteAuthorMethodDescriptor = authorsServiceServiceDescriptor.Methods().ByName("DeleteAuthor")
+	authorsServiceGetAuthorMethodDescriptor    = authorsServiceServiceDescriptor.Methods().ByName("GetAuthor")
+	authorsServiceListAuthorsMethodDescriptor  = authorsServiceServiceDescriptor.Methods().ByName("ListAuthors")
+)
+
 // AuthorsServiceClient is a client for the authors.v1.AuthorsService service.
 type AuthorsServiceClient interface {
-	CreateAuthor(context.Context, *connect_go.Request[v1.CreateAuthorRequest]) (*connect_go.Response[v1.CreateAuthorResponse], error)
-	DeleteAuthor(context.Context, *connect_go.Request[v1.DeleteAuthorRequest]) (*connect_go.Response[v1.DeleteAuthorResponse], error)
-	GetAuthor(context.Context, *connect_go.Request[v1.GetAuthorRequest]) (*connect_go.Response[v1.GetAuthorResponse], error)
-	ListAuthors(context.Context, *connect_go.Request[v1.ListAuthorsRequest]) (*connect_go.Response[v1.ListAuthorsResponse], error)
+	CreateAuthor(context.Context, *connect.Request[v1.CreateAuthorRequest]) (*connect.Response[v1.CreateAuthorResponse], error)
+	DeleteAuthor(context.Context, *connect.Request[v1.DeleteAuthorRequest]) (*connect.Response[v1.DeleteAuthorResponse], error)
+	GetAuthor(context.Context, *connect.Request[v1.GetAuthorRequest]) (*connect.Response[v1.GetAuthorResponse], error)
+	ListAuthors(context.Context, *connect.Request[v1.ListAuthorsRequest]) (*connect.Response[v1.ListAuthorsResponse], error)
 }
 
 // NewAuthorsServiceClient constructs a client for the authors.v1.AuthorsService service. By
@@ -62,66 +71,70 @@ type AuthorsServiceClient interface {
 //
 // The URL supplied here should be the base URL for the Connect or gRPC server (for example,
 // http://api.acme.com or https://acme.com/grpc).
-func NewAuthorsServiceClient(httpClient connect_go.HTTPClient, baseURL string, opts ...connect_go.ClientOption) AuthorsServiceClient {
+func NewAuthorsServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) AuthorsServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &authorsServiceClient{
-		createAuthor: connect_go.NewClient[v1.CreateAuthorRequest, v1.CreateAuthorResponse](
+		createAuthor: connect.NewClient[v1.CreateAuthorRequest, v1.CreateAuthorResponse](
 			httpClient,
 			baseURL+AuthorsServiceCreateAuthorProcedure,
-			opts...,
+			connect.WithSchema(authorsServiceCreateAuthorMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
-		deleteAuthor: connect_go.NewClient[v1.DeleteAuthorRequest, v1.DeleteAuthorResponse](
+		deleteAuthor: connect.NewClient[v1.DeleteAuthorRequest, v1.DeleteAuthorResponse](
 			httpClient,
 			baseURL+AuthorsServiceDeleteAuthorProcedure,
-			opts...,
+			connect.WithSchema(authorsServiceDeleteAuthorMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
-		getAuthor: connect_go.NewClient[v1.GetAuthorRequest, v1.GetAuthorResponse](
+		getAuthor: connect.NewClient[v1.GetAuthorRequest, v1.GetAuthorResponse](
 			httpClient,
 			baseURL+AuthorsServiceGetAuthorProcedure,
-			opts...,
+			connect.WithSchema(authorsServiceGetAuthorMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
-		listAuthors: connect_go.NewClient[v1.ListAuthorsRequest, v1.ListAuthorsResponse](
+		listAuthors: connect.NewClient[v1.ListAuthorsRequest, v1.ListAuthorsResponse](
 			httpClient,
 			baseURL+AuthorsServiceListAuthorsProcedure,
-			opts...,
+			connect.WithSchema(authorsServiceListAuthorsMethodDescriptor),
+			connect.WithClientOptions(opts...),
 		),
 	}
 }
 
 // authorsServiceClient implements AuthorsServiceClient.
 type authorsServiceClient struct {
-	createAuthor *connect_go.Client[v1.CreateAuthorRequest, v1.CreateAuthorResponse]
-	deleteAuthor *connect_go.Client[v1.DeleteAuthorRequest, v1.DeleteAuthorResponse]
-	getAuthor    *connect_go.Client[v1.GetAuthorRequest, v1.GetAuthorResponse]
-	listAuthors  *connect_go.Client[v1.ListAuthorsRequest, v1.ListAuthorsResponse]
+	createAuthor *connect.Client[v1.CreateAuthorRequest, v1.CreateAuthorResponse]
+	deleteAuthor *connect.Client[v1.DeleteAuthorRequest, v1.DeleteAuthorResponse]
+	getAuthor    *connect.Client[v1.GetAuthorRequest, v1.GetAuthorResponse]
+	listAuthors  *connect.Client[v1.ListAuthorsRequest, v1.ListAuthorsResponse]
 }
 
 // CreateAuthor calls authors.v1.AuthorsService.CreateAuthor.
-func (c *authorsServiceClient) CreateAuthor(ctx context.Context, req *connect_go.Request[v1.CreateAuthorRequest]) (*connect_go.Response[v1.CreateAuthorResponse], error) {
+func (c *authorsServiceClient) CreateAuthor(ctx context.Context, req *connect.Request[v1.CreateAuthorRequest]) (*connect.Response[v1.CreateAuthorResponse], error) {
 	return c.createAuthor.CallUnary(ctx, req)
 }
 
 // DeleteAuthor calls authors.v1.AuthorsService.DeleteAuthor.
-func (c *authorsServiceClient) DeleteAuthor(ctx context.Context, req *connect_go.Request[v1.DeleteAuthorRequest]) (*connect_go.Response[v1.DeleteAuthorResponse], error) {
+func (c *authorsServiceClient) DeleteAuthor(ctx context.Context, req *connect.Request[v1.DeleteAuthorRequest]) (*connect.Response[v1.DeleteAuthorResponse], error) {
 	return c.deleteAuthor.CallUnary(ctx, req)
 }
 
 // GetAuthor calls authors.v1.AuthorsService.GetAuthor.
-func (c *authorsServiceClient) GetAuthor(ctx context.Context, req *connect_go.Request[v1.GetAuthorRequest]) (*connect_go.Response[v1.GetAuthorResponse], error) {
+func (c *authorsServiceClient) GetAuthor(ctx context.Context, req *connect.Request[v1.GetAuthorRequest]) (*connect.Response[v1.GetAuthorResponse], error) {
 	return c.getAuthor.CallUnary(ctx, req)
 }
 
 // ListAuthors calls authors.v1.AuthorsService.ListAuthors.
-func (c *authorsServiceClient) ListAuthors(ctx context.Context, req *connect_go.Request[v1.ListAuthorsRequest]) (*connect_go.Response[v1.ListAuthorsResponse], error) {
+func (c *authorsServiceClient) ListAuthors(ctx context.Context, req *connect.Request[v1.ListAuthorsRequest]) (*connect.Response[v1.ListAuthorsResponse], error) {
 	return c.listAuthors.CallUnary(ctx, req)
 }
 
 // AuthorsServiceHandler is an implementation of the authors.v1.AuthorsService service.
 type AuthorsServiceHandler interface {
-	CreateAuthor(context.Context, *connect_go.Request[v1.CreateAuthorRequest]) (*connect_go.Response[v1.CreateAuthorResponse], error)
-	DeleteAuthor(context.Context, *connect_go.Request[v1.DeleteAuthorRequest]) (*connect_go.Response[v1.DeleteAuthorResponse], error)
-	GetAuthor(context.Context, *connect_go.Request[v1.GetAuthorRequest]) (*connect_go.Response[v1.GetAuthorResponse], error)
-	ListAuthors(context.Context, *connect_go.Request[v1.ListAuthorsRequest]) (*connect_go.Response[v1.ListAuthorsResponse], error)
+	CreateAuthor(context.Context, *connect.Request[v1.CreateAuthorRequest]) (*connect.Response[v1.CreateAuthorResponse], error)
+	DeleteAuthor(context.Context, *connect.Request[v1.DeleteAuthorRequest]) (*connect.Response[v1.DeleteAuthorResponse], error)
+	GetAuthor(context.Context, *connect.Request[v1.GetAuthorRequest]) (*connect.Response[v1.GetAuthorResponse], error)
+	ListAuthors(context.Context, *connect.Request[v1.ListAuthorsRequest]) (*connect.Response[v1.ListAuthorsResponse], error)
 }
 
 // NewAuthorsServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -129,26 +142,30 @@ type AuthorsServiceHandler interface {
 //
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
-func NewAuthorsServiceHandler(svc AuthorsServiceHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	authorsServiceCreateAuthorHandler := connect_go.NewUnaryHandler(
+func NewAuthorsServiceHandler(svc AuthorsServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	authorsServiceCreateAuthorHandler := connect.NewUnaryHandler(
 		AuthorsServiceCreateAuthorProcedure,
 		svc.CreateAuthor,
-		opts...,
+		connect.WithSchema(authorsServiceCreateAuthorMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
-	authorsServiceDeleteAuthorHandler := connect_go.NewUnaryHandler(
+	authorsServiceDeleteAuthorHandler := connect.NewUnaryHandler(
 		AuthorsServiceDeleteAuthorProcedure,
 		svc.DeleteAuthor,
-		opts...,
+		connect.WithSchema(authorsServiceDeleteAuthorMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
-	authorsServiceGetAuthorHandler := connect_go.NewUnaryHandler(
+	authorsServiceGetAuthorHandler := connect.NewUnaryHandler(
 		AuthorsServiceGetAuthorProcedure,
 		svc.GetAuthor,
-		opts...,
+		connect.WithSchema(authorsServiceGetAuthorMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
-	authorsServiceListAuthorsHandler := connect_go.NewUnaryHandler(
+	authorsServiceListAuthorsHandler := connect.NewUnaryHandler(
 		AuthorsServiceListAuthorsProcedure,
 		svc.ListAuthors,
-		opts...,
+		connect.WithSchema(authorsServiceListAuthorsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
 	)
 	return "/authors.v1.AuthorsService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
@@ -169,18 +186,18 @@ func NewAuthorsServiceHandler(svc AuthorsServiceHandler, opts ...connect_go.Hand
 // UnimplementedAuthorsServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedAuthorsServiceHandler struct{}
 
-func (UnimplementedAuthorsServiceHandler) CreateAuthor(context.Context, *connect_go.Request[v1.CreateAuthorRequest]) (*connect_go.Response[v1.CreateAuthorResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("authors.v1.AuthorsService.CreateAuthor is not implemented"))
+func (UnimplementedAuthorsServiceHandler) CreateAuthor(context.Context, *connect.Request[v1.CreateAuthorRequest]) (*connect.Response[v1.CreateAuthorResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("authors.v1.AuthorsService.CreateAuthor is not implemented"))
 }
 
-func (UnimplementedAuthorsServiceHandler) DeleteAuthor(context.Context, *connect_go.Request[v1.DeleteAuthorRequest]) (*connect_go.Response[v1.DeleteAuthorResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("authors.v1.AuthorsService.DeleteAuthor is not implemented"))
+func (UnimplementedAuthorsServiceHandler) DeleteAuthor(context.Context, *connect.Request[v1.DeleteAuthorRequest]) (*connect.Response[v1.DeleteAuthorResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("authors.v1.AuthorsService.DeleteAuthor is not implemented"))
 }
 
-func (UnimplementedAuthorsServiceHandler) GetAuthor(context.Context, *connect_go.Request[v1.GetAuthorRequest]) (*connect_go.Response[v1.GetAuthorResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("authors.v1.AuthorsService.GetAuthor is not implemented"))
+func (UnimplementedAuthorsServiceHandler) GetAuthor(context.Context, *connect.Request[v1.GetAuthorRequest]) (*connect.Response[v1.GetAuthorResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("authors.v1.AuthorsService.GetAuthor is not implemented"))
 }
 
-func (UnimplementedAuthorsServiceHandler) ListAuthors(context.Context, *connect_go.Request[v1.ListAuthorsRequest]) (*connect_go.Response[v1.ListAuthorsResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("authors.v1.AuthorsService.ListAuthors is not implemented"))
+func (UnimplementedAuthorsServiceHandler) ListAuthors(context.Context, *connect.Request[v1.ListAuthorsRequest]) (*connect.Response[v1.ListAuthorsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("authors.v1.AuthorsService.ListAuthors is not implemented"))
 }

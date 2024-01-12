@@ -12,36 +12,53 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"runtime"
 	"syscall"
 	"time"
 
+	"connectrpc.com/connect"
+	"connectrpc.com/otelconnect"
 	"go.uber.org/automaxprocs/maxprocs"
-
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
 	// database driver
 	_ "github.com/mattn/go-sqlite3"
+
+	"authors/internal/server/instrumentation/metric"
+	"authors/internal/server/litefs"
+	"authors/internal/server/litestream"
 )
 
-//go:generate sqlc-connect -m authors -migration-path sql/migrations -append
+//go:generate sqlc-connect -m authors -migration-path sql/migrations -litefs -litestream -append
 
-const serviceName = "authors"
+const (
+	serviceName    = "authors"
+	forwardTimeout = 10 * time.Second
+)
 
 var (
-	dbURL          string
-	replicationURL string
-	port           int
+	dbURL                string
+	port, prometheusPort int
+	replicationURL       string
+
+	litefsConfig litefs.Config
+	liteFS       *litefs.LiteFS
 )
 
 func main() {
 	var dev bool
 	flag.StringVar(&dbURL, "db", "", "The Database connection URL")
 	flag.IntVar(&port, "port", 5000, "The server port")
+	flag.IntVar(&prometheusPort, "prometheus-port", 0, "The metrics server port")
 	flag.BoolVar(&dev, "dev", false, "Set logger to development mode")
+
 	flag.StringVar(&replicationURL, "replication", "", "S3 replication URL")
+	litefs.SetFlags(&litefsConfig)
 	flag.Parse()
+
+	dbURL = filepath.Join(litefsConfig.MountDir, dbURL)
 
 	initLogger(dev)
 
@@ -52,7 +69,8 @@ func main() {
 }
 
 func run() error {
-	if _, err := maxprocs.Set(); err != nil {
+	_, err := maxprocs.Set()
+	if err != nil {
 		slog.Warn("startup", "error", err)
 	}
 	slog.Info("startup", "GOMAXPROCS", runtime.GOMAXPROCS(0))
@@ -65,7 +83,7 @@ func run() error {
 
 	if replicationURL != "" {
 		slog.Info("replication", "url", replicationURL)
-		lsdb, err := replicate(context.Background(), dbURL, replicationURL)
+		lsdb, err := litestream.Replicate(context.Background(), dbURL, replicationURL)
 		if err != nil {
 			return fmt.Errorf("init replication error: %w", err)
 		}
@@ -76,11 +94,43 @@ func run() error {
 	}
 
 	mux := http.NewServeMux()
-	registerHandlers(mux, db)
+	var interceptors []connect.Interceptor
+	if prometheusPort > 0 {
+		observability, err := otelconnect.NewInterceptor()
+		if err != nil {
+			return err
+		}
+		interceptors = append(interceptors, observability)
+	}
+	registerHandlers(mux, db, interceptors)
+
+	if litefsConfig.MountDir != "" {
+		err := litefsConfig.Validate()
+		if err != nil {
+			return fmt.Errorf("liteFS parameters validation: %w", err)
+		}
+
+		liteFS, err = litefs.Start(litefsConfig)
+		if err != nil {
+			return fmt.Errorf("cannot start LiteFS: %w", err)
+		}
+		defer liteFS.Close()
+
+		<-liteFS.ReadyCh()
+		slog.Info("LiteFS cluster is ready")
+	}
+	handler := liteFS.ForwardToLeader(forwardTimeout, "POST", "PUT", "PATCH", "DELETE")(mux)
+	handler = liteFS.ConsistentReader(forwardTimeout, "GET")(handler)
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
-		Handler: h2c.NewHandler(mux, &http2.Server{}),
+		Handler: h2c.NewHandler(handler, &http2.Server{}),
 		// Please, configure timeouts!
+	}
+	if prometheusPort > 0 {
+		err := metric.Init(prometheusPort, serviceName)
+		if err != nil {
+			return err
+		}
 	}
 
 	done := make(chan os.Signal, 1)
