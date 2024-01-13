@@ -1,5 +1,5 @@
 # sqlc-connect
-Generate [connect-go](https://connect.build/) server from SQL.
+Generate [connect-go](https://connect.build/) server from SQL. If you’re searching for a SQLC plugin, use [sqlc-gen-go-server](https://github.com/walterwanderley/sqlc-gen-go-server/).
 
 ### Requirements
 
