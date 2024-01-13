@@ -104,6 +104,7 @@ func run() error {
 	}
 	registerHandlers(mux, db, interceptors)
 
+	var handler http.Handler = mux
 	if litefsConfig.MountDir != "" {
 		err := litefsConfig.Validate()
 		if err != nil {
@@ -118,9 +119,11 @@ func run() error {
 
 		<-liteFS.ReadyCh()
 		slog.Info("LiteFS cluster is ready")
+
+		mux.HandleFunc("/nodes/", liteFS.ClusterHandler)
+		handler = liteFS.ForwardToLeader(forwardTimeout, "POST", "PUT", "PATCH", "DELETE")(handler)
+		handler = liteFS.ConsistentReader(forwardTimeout, "GET")(handler)
 	}
-	handler := liteFS.ForwardToLeader(forwardTimeout, "POST", "PUT", "PATCH", "DELETE")(mux)
-	handler = liteFS.ConsistentReader(forwardTimeout, "GET")(handler)
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
 		Handler: h2c.NewHandler(handler, &http2.Server{}),

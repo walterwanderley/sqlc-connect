@@ -8,7 +8,7 @@ require (
 	connectrpc.com/otelconnect v0.7.0
 	github.com/XSAM/otelsql v0.27.0
 	github.com/bufbuild/buf v1.28.1
-	github.com/jackc/pgx/v5 v5.5.1
+	github.com/jackc/pgx/v5 v5.5.2
 	github.com/lib/pq v1.10.9
 	github.com/prometheus/client_golang v1.18.0
 	go.opentelemetry.io/otel v1.21.0

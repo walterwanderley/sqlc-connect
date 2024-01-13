@@ -8,7 +8,7 @@ require (
 	connectrpc.com/otelconnect v0.7.0
 	github.com/bufbuild/buf v1.28.1
 	github.com/golang-migrate/migrate/v4 v4.17.0
-	github.com/jackc/pgx/v5 v5.5.1
+	github.com/jackc/pgx/v5 v5.5.2
 	github.com/prometheus/client_golang v1.18.0
 	go.opentelemetry.io/otel v1.21.0
 	go.opentelemetry.io/otel/exporters/prometheus v0.44.0
