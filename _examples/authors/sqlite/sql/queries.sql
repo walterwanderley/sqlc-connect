@@ -1,18 +1,18 @@
-/* name: GetAuthor :one */
+/* name: getAuthor :one */
 SELECT * FROM authors
 WHERE id = ? LIMIT 1;
 
-/* name: ListAuthors :many */
+/* name: listAuthors :many */
 SELECT * FROM authors
 ORDER BY name;
 
-/* name: CreateAuthor :execresult */
+/* name: createAuthor :execresult */
 INSERT INTO authors (
   name, bio
 ) VALUES (
   ?, ? 
 );
 
-/* name: DeleteAuthor :exec */
+/* name: deleteAuthor :exec */
 DELETE FROM authors
 WHERE id = ?;

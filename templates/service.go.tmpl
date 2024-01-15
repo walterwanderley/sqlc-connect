@@ -31,7 +31,7 @@ type Service struct {
 
 {{$emitDbArgument := .EmitDbArgument}}
 {{ range .Services }}
-func (s *Service) {{.Name}}(ctx context.Context, req *connect.Request[pb.{{.Name}}Request]) (*connect.Response[pb.{{.Name}}Response], error) {
+func (s *Service) {{.Name | UpperFirstCharacter}}(ctx context.Context, req *connect.Request[pb.{{.Name | UpperFirstCharacter}}Request]) (*connect.Response[pb.{{.Name | UpperFirstCharacter}}Response], error) {
 	{{ range . | Input}}{{ .}}
 	{{end}}
 	{{if not .EmptyOutput}}result, {{end}}err := s.querier.{{ .Name}}(ctx{{if $emitDbArgument}}, s.db{{end}}{{ .ParamsCallDatabase}})
