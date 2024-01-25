@@ -29,7 +29,18 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 		newPath := strings.TrimSuffix(path, ".tmpl")
 
 		if d.IsDir() {
+			if strings.HasSuffix(newPath, "server") {
+				return nil
+			}
+
+			if strings.HasSuffix(newPath, "instrumentation") && (!def.DistributedTracing && !def.Metric) {
+				return nil
+			}
+
 			if strings.HasSuffix(newPath, "trace") && !def.DistributedTracing {
+				return nil
+			}
+			if strings.HasSuffix(newPath, "metric") && !def.Metric {
 				return nil
 			}
 			if strings.HasSuffix(newPath, "litestream") && !(def.Database() == "sqlite" && def.Litestream) {
@@ -136,6 +147,10 @@ func process(def *metadata.Definition, outPath string, appendMode bool) error {
 		}
 
 		if strings.HasSuffix(newPath, "tracing.go") && !def.DistributedTracing {
+			return nil
+		}
+
+		if strings.HasSuffix(newPath, "metric.go") && !def.Metric {
 			return nil
 		}
 

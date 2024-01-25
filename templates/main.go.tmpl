@@ -44,7 +44,7 @@ const serviceName = "{{ .GoModule}}"
 {{end}}
 var (
 	dbURL string	
-	port, prometheusPort int
+	port{{if .Metric}}, prometheusPort{{end}} int
 	{{if .Litestream}}replicationURL string{{end}}
 	{{if .DistributedTracing}}otlpEndpoint string{{end}}
 	{{if .LiteFS}}litefsConfig   litefs.Config
@@ -55,7 +55,7 @@ func main() {
 	var dev bool
 	flag.StringVar(&dbURL, "db", "", "The Database connection URL")
 	flag.IntVar(&port, "port", 5000, "The server port")
-	flag.IntVar(&prometheusPort, "prometheus-port", 0, "The metrics server port")
+	{{if .Metric}}flag.IntVar(&prometheusPort, "prometheus-port", 0, "The metrics server port"){{end}}
 	flag.BoolVar(&dev, "dev", false, "Set logger to development mode")
 	{{if .DistributedTracing}}flag.StringVar(&otlpEndpoint, "otlp-endpoint", "", "The Open Telemetry Protocol Endpoint (example: localhost:4317)"){{end}}
 	{{if .Litestream}}flag.StringVar(&replicationURL, "replication", "", "S3 replication URL"){{end}}
@@ -149,13 +149,14 @@ func run() error {
 
 	mux := http.NewServeMux()
 	var interceptors []connect.Interceptor
-	if prometheusPort > 0{{if .DistributedTracing}} || otlpEndpoint != ""{{end}} {
+	{{if or .Metric .DistributedTracing}}
+	if {{if .Metric}}prometheusPort > 0{{end}}{{if .DistributedTracing}}{{if .Metric}} || {{end}}otlpEndpoint != ""{{end}} {
 		observability, err := otelconnect.NewInterceptor()
 		if err != nil {
 			return err
 		}
 		interceptors = append(interceptors, observability)
-	}
+	}{{end}}
 	registerHandlers(mux, db, interceptors)
 	{{if .LiteFS}}
 	var handler http.Handler = mux
@@ -188,13 +189,13 @@ func run() error {
     	Handler: h2c.NewHandler(mux, &http2.Server{}),
     	// Please, configure timeouts!
   	}
-	{{end}}
+	{{end}}{{if .Metric}}
 	if prometheusPort > 0 {
 		err := metric.Init(prometheusPort, serviceName)
 		if err != nil {
 			return err
 		}
-	}
+	}{{end}}
 	{{if .DistributedTracing}}
 	if otlpEndpoint != "" {
 		shutdown, err := trace.Init(context.Background(), serviceName, otlpEndpoint)

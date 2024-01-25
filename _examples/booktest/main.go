@@ -31,7 +31,7 @@ import (
 	"booktest/internal/server/instrumentation/trace"
 )
 
-//go:generate sqlc-connect -m booktest -tracing -append
+//go:generate sqlc-connect -m booktest -tracing -metric -append
 
 const serviceName = "booktest"
 
@@ -94,6 +94,7 @@ func run() error {
 
 	mux := http.NewServeMux()
 	var interceptors []connect.Interceptor
+
 	if prometheusPort > 0 || otlpEndpoint != "" {
 		observability, err := otelconnect.NewInterceptor()
 		if err != nil {
