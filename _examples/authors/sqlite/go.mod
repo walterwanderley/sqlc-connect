@@ -9,7 +9,7 @@ require (
 	github.com/bufbuild/buf v1.29.0
 	github.com/hashicorp/raft v1.6.0
 	github.com/hashicorp/raft-boltdb v0.0.0-20231211162105-6c830fa4535e
-	github.com/mattn/go-sqlite3 v1.14.19
+	github.com/mattn/go-sqlite3 v1.14.20
 	github.com/pressly/goose/v3 v3.17.0
 	github.com/superfly/litefs v0.5.11
 	github.com/superfly/ltx v0.3.13
