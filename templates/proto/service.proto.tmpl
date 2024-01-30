@@ -12,12 +12,17 @@ package {{.Package | SnakeCase}}.v1;
 service {{.Package | PascalCase}}Service {
     {{range .CustomServiceProtoOptions}}{{ .}}
     {{end}}
+    {{- range .CustomProtoRPCs}}{{ .}}
+    {{end}}
     {{- range .Services}}
     {{range .CustomProtoComments}}// {{ .}}
     {{end -}}
     rpc {{.Name | UpperFirstCharacter}}({{.Name | UpperFirstCharacter}}Request) returns ({{.Name | UpperFirstCharacter}}Response) { }
     {{end}}
 }
+
+{{- range .CustomProtoMessages}}{{ .}}
+{{end}}
 
 {{range $key, $value := .Messages}}
 {{range $value.CustomProtoComments}}// {{ .}}
