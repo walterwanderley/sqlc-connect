@@ -8,14 +8,14 @@ require (
 	connectrpc.com/otelconnect v0.7.0
 	github.com/XSAM/otelsql v0.27.0
 	github.com/bufbuild/buf v1.29.0
-	github.com/jackc/pgx/v5 v5.5.2
+	github.com/jackc/pgx/v5 v5.5.3
 	github.com/lib/pq v1.10.9
 	github.com/prometheus/client_golang v1.18.0
-	go.opentelemetry.io/otel v1.22.0
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.22.0
-	go.opentelemetry.io/otel/exporters/prometheus v0.45.0
-	go.opentelemetry.io/otel/sdk v1.22.0
-	go.opentelemetry.io/otel/sdk/metric v1.22.0
+	go.opentelemetry.io/otel v1.23.0
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.23.0
+	go.opentelemetry.io/otel/exporters/prometheus v0.45.1
+	go.opentelemetry.io/otel/sdk v1.23.0
+	go.opentelemetry.io/otel/sdk/metric v1.23.0
 	go.uber.org/automaxprocs v1.5.3
 	golang.org/x/net v0.20.0
 	google.golang.org/protobuf v1.32.0
@@ -52,7 +52,7 @@ require (
 	github.com/google/cel-go v0.19.0 // indirect
 	github.com/google/go-containerregistry v0.18.0 // indirect
 	github.com/google/pprof v0.0.0-20240117000934-35fc243c5815 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
@@ -81,10 +81,10 @@ require (
 	github.com/tetratelabs/wazero v1.6.0 // indirect
 	github.com/vbatts/tar-split v0.11.5 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.47.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.22.0 // indirect
-	go.opentelemetry.io/otel/metric v1.22.0 // indirect
-	go.opentelemetry.io/otel/trace v1.22.0 // indirect
-	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.23.0 // indirect
+	go.opentelemetry.io/otel/metric v1.23.0 // indirect
+	go.opentelemetry.io/otel/trace v1.23.0 // indirect
+	go.opentelemetry.io/proto/otlp v1.1.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
@@ -98,6 +98,6 @@ require (
 	golang.org/x/tools v0.17.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240116215550-a9fa1716bcac // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240116215550-a9fa1716bcac // indirect
-	google.golang.org/grpc v1.60.1 // indirect
+	google.golang.org/grpc v1.61.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

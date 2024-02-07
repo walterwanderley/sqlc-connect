@@ -19,7 +19,7 @@ import (
 	"connectrpc.com/connect"
 	"connectrpc.com/otelconnect"
 	"github.com/XSAM/otelsql"
-	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.23.0"
 	"go.uber.org/automaxprocs/maxprocs"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
