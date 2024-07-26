@@ -1,0 +1,256 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "authors/v1/authors.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "AuthorsService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/authors.v1.AuthorsService/CreateAuthor": {
+      "post": {
+        "operationId": "AuthorsService_CreateAuthor",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateAuthorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateAuthorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthorsService"
+        ]
+      }
+    },
+    "/authors.v1.AuthorsService/DeleteAuthor": {
+      "post": {
+        "operationId": "AuthorsService_DeleteAuthor",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteAuthorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DeleteAuthorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthorsService"
+        ]
+      }
+    },
+    "/authors.v1.AuthorsService/GetAuthor": {
+      "post": {
+        "operationId": "AuthorsService_GetAuthor",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAuthorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetAuthorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthorsService"
+        ]
+      }
+    },
+    "/authors.v1.AuthorsService/ListAuthors": {
+      "post": {
+        "operationId": "AuthorsService_ListAuthors",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListAuthorsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ListAuthorsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthorsService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Authors": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreateAuthorRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreateAuthorResponse": {
+      "type": "object",
+      "properties": {
+        "authors": {
+          "$ref": "#/definitions/v1Authors"
+        }
+      }
+    },
+    "v1DeleteAuthorRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1DeleteAuthorResponse": {
+      "type": "object"
+    },
+    "v1GetAuthorRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1GetAuthorResponse": {
+      "type": "object",
+      "properties": {
+        "authors": {
+          "$ref": "#/definitions/v1Authors"
+        }
+      }
+    },
+    "v1ListAuthorsRequest": {
+      "type": "object"
+    },
+    "v1ListAuthorsResponse": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Authors"
+          }
+        }
+      }
+    }
+  }
+}

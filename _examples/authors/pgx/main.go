@@ -5,6 +5,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	_ "embed"
 	"errors"
 	"flag"
 	"fmt"
@@ -17,13 +18,13 @@ import (
 	"time"
 
 	"connectrpc.com/connect"
+	"github.com/flowchartsman/swaggerui"
 	"go.uber.org/automaxprocs/maxprocs"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
 	// database driver
 	"github.com/jackc/pgx/v5/pgxpool"
-	_ "github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
@@ -34,6 +35,9 @@ const serviceName = "authors"
 var (
 	dbURL string
 	port  int
+
+	//go:embed api/apidocs.swagger.json
+	openAPISpec []byte
 )
 
 func main() {
@@ -80,6 +84,7 @@ func run() error {
 	var interceptors []connect.Interceptor
 
 	registerHandlers(mux, db, interceptors)
+	mux.Handle("/swagger/", http.StripPrefix("/swagger", swaggerui.Handler(openAPISpec)))
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),

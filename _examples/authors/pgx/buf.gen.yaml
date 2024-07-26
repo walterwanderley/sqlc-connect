@@ -1,10 +1,15 @@
-version: v1
+version: v2
 plugins:
-  - name: go
+  - local: protoc-gen-go
+    out: api
+    opt: paths=source_relative
+  - local: protoc-gen-connect-go
+    out: api
+    opt: paths=source_relative
+  - local: protoc-gen-openapiv2
     out: api
     opt:
-      - paths=source_relative
-  - name: connect-go
-    out: api
-    opt:
-      - paths=source_relative 
+      - generate_unbound_methods=true
+      - logtostderr=true
+      - allow_merge=true
+    strategy: all

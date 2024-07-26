@@ -5,6 +5,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	_ "embed"
 	"errors"
 	"flag"
 	"fmt"
@@ -19,6 +20,7 @@ import (
 	"connectrpc.com/connect"
 	"connectrpc.com/otelconnect"
 	"github.com/XSAM/otelsql"
+	"github.com/flowchartsman/swaggerui"
 	semconv "go.opentelemetry.io/otel/semconv/v1.23.0"
 	"go.uber.org/automaxprocs/maxprocs"
 	"golang.org/x/net/http2"
@@ -40,6 +42,9 @@ var (
 	port, prometheusPort int
 
 	otlpEndpoint string
+
+	//go:embed api/apidocs.swagger.json
+	openAPISpec []byte
 )
 
 func main() {
@@ -103,6 +108,7 @@ func run() error {
 		interceptors = append(interceptors, observability)
 	}
 	registerHandlers(mux, db, interceptors)
+	mux.Handle("/swagger/", http.StripPrefix("/swagger", swaggerui.Handler(openAPISpec)))
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),

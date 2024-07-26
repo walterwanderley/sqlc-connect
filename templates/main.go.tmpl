@@ -5,6 +5,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	_ "embed"
 	"errors"
 	"flag"
 	"fmt"
@@ -20,13 +21,14 @@ import (
 	"connectrpc.com/connect"
 	"connectrpc.com/otelconnect"
 	"github.com/exaring/otelpgx"
+	"github.com/flowchartsman/swaggerui"
 	"github.com/XSAM/otelsql"
 	semconv "go.opentelemetry.io/otel/semconv/v1.23.0"
 	"go.uber.org/automaxprocs/maxprocs"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	// database driver
-	_ "{{ .DatabaseImport}}"
+	{{if eq .SqlPackage "pgx/v5"}}"github.com/jackc/pgx/v5/pgxpool"{{else}}_ "{{ .DatabaseImport}}"{{end}}
 	{{if .MigrationPath}}{{if eq .SqlPackage "pgx/v5"}}_ "github.com/jackc/pgx/v5/stdlib"{{end}}{{end}}
 
 	"{{ .GoModule}}/internal/server/litefs"
@@ -50,6 +52,8 @@ var (
 	{{if .DistributedTracing}}otlpEndpoint string{{end}}
 	{{if .LiteFS}}litefsConfig   litefs.Config
 	liteFS         *litefs.LiteFS{{end}}
+	//go:embed api/apidocs.swagger.json
+	openAPISpec []byte
 )
 
 func main() {
@@ -159,6 +163,7 @@ func run() error {
 		interceptors = append(interceptors, observability)
 	}{{end}}
 	registerHandlers(mux, db, interceptors)
+	mux.Handle("/swagger/", http.StripPrefix("/swagger", swaggerui.Handler(openAPISpec)))
 	{{if .LiteFS}}
 	var handler http.Handler = mux
 	if litefsConfig.MountDir != "" {

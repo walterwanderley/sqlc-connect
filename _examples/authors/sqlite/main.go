@@ -5,6 +5,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	_ "embed"
 	"errors"
 	"flag"
 	"fmt"
@@ -18,6 +19,7 @@ import (
 	"time"
 
 	"connectrpc.com/connect"
+	"github.com/flowchartsman/swaggerui"
 	"go.uber.org/automaxprocs/maxprocs"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -43,6 +45,8 @@ var (
 
 	litefsConfig litefs.Config
 	liteFS       *litefs.LiteFS
+	//go:embed api/apidocs.swagger.json
+	openAPISpec []byte
 )
 
 func main() {
@@ -95,6 +99,7 @@ func run() error {
 	var interceptors []connect.Interceptor
 
 	registerHandlers(mux, db, interceptors)
+	mux.Handle("/swagger/", http.StripPrefix("/swagger", swaggerui.Handler(openAPISpec)))
 
 	var handler http.Handler = mux
 	if litefsConfig.MountDir != "" {

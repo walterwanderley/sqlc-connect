@@ -1,0 +1,607 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "books/v1/books.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "BooksService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/books.v1.BooksService/BooksByTags": {
+      "post": {
+        "operationId": "BooksService_BooksByTags",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1BooksByTagsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1BooksByTagsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BooksService"
+        ]
+      }
+    },
+    "/books.v1.BooksService/BooksByTitleYear": {
+      "post": {
+        "operationId": "BooksService_BooksByTitleYear",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1BooksByTitleYearResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1BooksByTitleYearRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BooksService"
+        ]
+      }
+    },
+    "/books.v1.BooksService/CreateAuthor": {
+      "post": {
+        "operationId": "BooksService_CreateAuthor",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateAuthorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateAuthorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BooksService"
+        ]
+      }
+    },
+    "/books.v1.BooksService/CreateBook": {
+      "post": {
+        "operationId": "BooksService_CreateBook",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateBookResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateBookRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BooksService"
+        ]
+      }
+    },
+    "/books.v1.BooksService/DeleteBook": {
+      "post": {
+        "operationId": "BooksService_DeleteBook",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteBookResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DeleteBookRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BooksService"
+        ]
+      }
+    },
+    "/books.v1.BooksService/GetAuthor": {
+      "post": {
+        "operationId": "BooksService_GetAuthor",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAuthorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetAuthorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BooksService"
+        ]
+      }
+    },
+    "/books.v1.BooksService/GetBook": {
+      "post": {
+        "operationId": "BooksService_GetBook",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetBookResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetBookRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BooksService"
+        ]
+      }
+    },
+    "/books.v1.BooksService/UpdateBook": {
+      "post": {
+        "operationId": "BooksService_UpdateBook",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateBookResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateBookRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BooksService"
+        ]
+      }
+    },
+    "/books.v1.BooksService/UpdateBookISBN": {
+      "post": {
+        "operationId": "BooksService_UpdateBookISBN",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateBookISBNResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateBookISBNRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BooksService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Author": {
+      "type": "object",
+      "properties": {
+        "authorId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1Book": {
+      "type": "object",
+      "properties": {
+        "bookId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "authorId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "isbn": {
+          "type": "string"
+        },
+        "bookType": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "year": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "available": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1BooksByTagsRequest": {
+      "type": "object",
+      "properties": {
+        "dollar1": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1BooksByTagsResponse": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1BooksByTagsRow"
+          }
+        }
+      }
+    },
+    "v1BooksByTagsRow": {
+      "type": "object",
+      "properties": {
+        "bookId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "title": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "isbn": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1BooksByTitleYearRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "year": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1BooksByTitleYearResponse": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Book"
+          }
+        }
+      }
+    },
+    "v1CreateAuthorRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreateAuthorResponse": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "$ref": "#/definitions/v1Author"
+        }
+      }
+    },
+    "v1CreateBookRequest": {
+      "type": "object",
+      "properties": {
+        "authorId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "isbn": {
+          "type": "string"
+        },
+        "bookType": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "year": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "available": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1CreateBookResponse": {
+      "type": "object",
+      "properties": {
+        "book": {
+          "$ref": "#/definitions/v1Book"
+        }
+      }
+    },
+    "v1DeleteBookRequest": {
+      "type": "object",
+      "properties": {
+        "bookId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1DeleteBookResponse": {
+      "type": "object"
+    },
+    "v1GetAuthorRequest": {
+      "type": "object",
+      "properties": {
+        "authorId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1GetAuthorResponse": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "$ref": "#/definitions/v1Author"
+        }
+      }
+    },
+    "v1GetBookRequest": {
+      "type": "object",
+      "properties": {
+        "bookId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1GetBookResponse": {
+      "type": "object",
+      "properties": {
+        "book": {
+          "$ref": "#/definitions/v1Book"
+        }
+      }
+    },
+    "v1UpdateBookISBNRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bookId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "isbn": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UpdateBookISBNResponse": {
+      "type": "object"
+    },
+    "v1UpdateBookRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bookType": {
+          "type": "string"
+        },
+        "bookId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1UpdateBookResponse": {
+      "type": "object"
+    }
+  }
+}
