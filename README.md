@@ -88,6 +88,10 @@ go run . -db [Database Connection URL] -dev
 
 6. Enjoy!
 
+[http://localhost:5000/swagger](http://localhost:5000/swagger)
+
+or
+
 ```sh
 go install github.com/fullstorydev/grpcui/cmd/grpcui@latest
 grpcui -plaintext localhost:5000
