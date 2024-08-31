@@ -1,6 +1,6 @@
 module uuidcheck
 
-go 1.22.4
+go 1.22.5
 
 require (
 	connectrpc.com/connect v1.16.2
