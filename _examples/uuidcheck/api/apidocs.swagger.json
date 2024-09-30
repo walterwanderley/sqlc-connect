@@ -19,6 +19,198 @@
     "application/json"
   ],
   "paths": {
+    "/googleuuid.v1.GoogleuuidService/CreateProduct": {
+      "post": {
+        "operationId": "GoogleuuidService_CreateProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GoogleuuidService"
+        ]
+      }
+    },
+    "/googleuuid.v1.GoogleuuidService/CreateProductReturnAll": {
+      "post": {
+        "operationId": "GoogleuuidService_CreateProductReturnAll",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateProductReturnAllResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateProductReturnAllRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GoogleuuidService"
+        ]
+      }
+    },
+    "/googleuuid.v1.GoogleuuidService/CreateProductReturnPartial": {
+      "post": {
+        "operationId": "GoogleuuidService_CreateProductReturnPartial",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateProductReturnPartialResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateProductReturnPartialRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GoogleuuidService"
+        ]
+      }
+    },
+    "/googleuuid.v1.GoogleuuidService/CreateUser": {
+      "post": {
+        "operationId": "GoogleuuidService_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GoogleuuidService"
+        ]
+      }
+    },
+    "/googleuuid.v1.GoogleuuidService/CreateUserReturnAll": {
+      "post": {
+        "operationId": "GoogleuuidService_CreateUserReturnAll",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateUserReturnAllResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateUserReturnAllRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GoogleuuidService"
+        ]
+      }
+    },
+    "/googleuuid.v1.GoogleuuidService/CreateUserReturnPartial": {
+      "post": {
+        "operationId": "GoogleuuidService_CreateUserReturnPartial",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateUserReturnPartialResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateUserReturnPartialRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GoogleuuidService"
+        ]
+      }
+    },
     "/googleuuid.v1.GoogleuuidService/GetProductsByIds": {
       "post": {
         "operationId": "GoogleuuidService_GetProductsByIds",
@@ -48,6 +240,198 @@
         ],
         "tags": [
           "GoogleuuidService"
+        ]
+      }
+    },
+    "/pguuid.v1.PguuidService/CreateProduct": {
+      "post": {
+        "operationId": "PguuidService_CreateProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PguuidService"
+        ]
+      }
+    },
+    "/pguuid.v1.PguuidService/CreateProductReturnAll": {
+      "post": {
+        "operationId": "PguuidService_CreateProductReturnAll",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateProductReturnAllResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateProductReturnAllRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PguuidService"
+        ]
+      }
+    },
+    "/pguuid.v1.PguuidService/CreateProductReturnPartial": {
+      "post": {
+        "operationId": "PguuidService_CreateProductReturnPartial",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateProductReturnPartialResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateProductReturnPartialRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PguuidService"
+        ]
+      }
+    },
+    "/pguuid.v1.PguuidService/CreateUser": {
+      "post": {
+        "operationId": "PguuidService_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PguuidService"
+        ]
+      }
+    },
+    "/pguuid.v1.PguuidService/CreateUserReturnAll": {
+      "post": {
+        "operationId": "PguuidService_CreateUserReturnAll",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateUserReturnAllResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateUserReturnAllRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PguuidService"
+        ]
+      }
+    },
+    "/pguuid.v1.PguuidService/CreateUserReturnPartial": {
+      "post": {
+        "operationId": "PguuidService_CreateUserReturnPartial",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateUserReturnPartialResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateUserReturnPartialRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PguuidService"
         ]
       }
     },
@@ -85,6 +469,150 @@
     }
   },
   "definitions": {
+    "googleuuidv1CreateProductRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "category": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "googleuuidv1CreateProductResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "googleuuidv1CreateProductReturnAllRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "category": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "googleuuidv1CreateProductReturnAllResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/googleuuidv1Product"
+        }
+      }
+    },
+    "googleuuidv1CreateProductReturnPartialRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "category": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "googleuuidv1CreateProductReturnPartialResponse": {
+      "type": "object",
+      "properties": {
+        "createProductReturnPartialRow": {
+          "$ref": "#/definitions/googleuuidv1CreateProductReturnPartialRow"
+        }
+      }
+    },
+    "googleuuidv1CreateProductReturnPartialRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "googleuuidv1CreateUserRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        }
+      }
+    },
+    "googleuuidv1CreateUserResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "googleuuidv1CreateUserReturnAllRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        }
+      }
+    },
+    "googleuuidv1CreateUserReturnAllResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/googleuuidv1User"
+        }
+      }
+    },
+    "googleuuidv1CreateUserReturnPartialRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        }
+      }
+    },
+    "googleuuidv1CreateUserReturnPartialResponse": {
+      "type": "object",
+      "properties": {
+        "createUserReturnPartialRow": {
+          "$ref": "#/definitions/googleuuidv1CreateUserReturnPartialRow"
+        }
+      }
+    },
+    "googleuuidv1CreateUserReturnPartialRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "googleuuidv1GetProductsByIdsRequest": {
       "type": "object",
       "properties": {
@@ -124,6 +652,164 @@
         }
       }
     },
+    "googleuuidv1User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "pguuidv1CreateProductRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "category": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pguuidv1CreateProductResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pguuidv1CreateProductReturnAllRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "category": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pguuidv1CreateProductReturnAllResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/pguuidv1Product"
+        }
+      }
+    },
+    "pguuidv1CreateProductReturnPartialRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "category": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pguuidv1CreateProductReturnPartialResponse": {
+      "type": "object",
+      "properties": {
+        "createProductReturnPartialRow": {
+          "$ref": "#/definitions/pguuidv1CreateProductReturnPartialRow"
+        }
+      }
+    },
+    "pguuidv1CreateProductReturnPartialRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "pguuidv1CreateUserRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        }
+      }
+    },
+    "pguuidv1CreateUserResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "pguuidv1CreateUserReturnAllRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        }
+      }
+    },
+    "pguuidv1CreateUserReturnAllResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/pguuidv1User"
+        }
+      }
+    },
+    "pguuidv1CreateUserReturnPartialRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        }
+      }
+    },
+    "pguuidv1CreateUserReturnPartialResponse": {
+      "type": "object",
+      "properties": {
+        "createUserReturnPartialRow": {
+          "$ref": "#/definitions/pguuidv1CreateUserReturnPartialRow"
+        }
+      }
+    },
+    "pguuidv1CreateUserReturnPartialRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "pguuidv1GetProductsByIdsRequest": {
       "type": "object",
       "properties": {
@@ -157,6 +843,20 @@
         "category": {
           "type": "integer",
           "format": "int32"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "pguuidv1User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
         },
         "name": {
           "type": "string"
