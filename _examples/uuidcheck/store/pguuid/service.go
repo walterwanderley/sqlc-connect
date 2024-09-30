@@ -157,9 +157,57 @@ func (s *Service) GetProductsByIds(ctx context.Context, req *connect.Request[pb.
 		slog.Error("sql call failed", "error", err, "method", "GetProductsByIds")
 		return nil, err
 	}
-	res := new(pb.GetProductsByIdsResponse)
-	for _, r := range result {
-		res.List = append(res.List, toProduct(r))
+
+	if uuidStr, err := result.MarshalJSON(); err != nil {
+		return nil, fmt.Errorf("failed to convert UUID to string: %w", err)
+	} else {
+		return connect.NewResponse(&pb.CreateUserResponse{Value: wrapperspb.String(string(uuidStr))}), nil
+	}
+}
+
+func (s *Service) CreateUserReturnAll(ctx context.Context, req *connect.Request[pb.CreateUserReturnAllRequest]) (*connect.Response[pb.CreateUserReturnAllResponse], error) {
+	var arg CreateUserReturnAllParams
+	if v := req.Msg.GetId(); v != nil {
+		if err := json.Unmarshal([]byte(v.GetValue()), &arg.ID); err != nil {
+			err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		}
+	}
+	if v := req.Msg.GetLocation(); v != nil {
+		if err := json.Unmarshal([]byte(v.GetValue()), &arg.Location); err != nil {
+			err = fmt.Errorf("invalid Location: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		}
+	}
+
+	result, err := s.querier.CreateUserReturnAll(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "CreateUserReturnAll")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.CreateUserReturnAllResponse{User: toUser(result)}), nil
+}
+
+func (s *Service) CreateUserReturnPartial(ctx context.Context, req *connect.Request[pb.CreateUserReturnPartialRequest]) (*connect.Response[pb.CreateUserReturnPartialResponse], error) {
+	var arg CreateUserReturnPartialParams
+	if v := req.Msg.GetId(); v != nil {
+		if err := json.Unmarshal([]byte(v.GetValue()), &arg.ID); err != nil {
+			err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		}
+	}
+	if v := req.Msg.GetLocation(); v != nil {
+		if err := json.Unmarshal([]byte(v.GetValue()), &arg.Location); err != nil {
+			err = fmt.Errorf("invalid Location: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		}
+	}
+
+	result, err := s.querier.CreateUserReturnPartial(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "CreateUserReturnPartial")
+		return nil, err
+
 	}
 	return connect.NewResponse(res), nil
 }
