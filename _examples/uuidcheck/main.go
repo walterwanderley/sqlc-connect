@@ -26,7 +26,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-//go:generate /var/folders/ks/_614mn9d3c53zg_y00d9md840000gn/T/go-build1798372745/b001/exe/sqlc-connect -append
+//go:generate sqlc-connect -m uuidcheck -append
 
 const serviceName = "uuidcheck"
 
