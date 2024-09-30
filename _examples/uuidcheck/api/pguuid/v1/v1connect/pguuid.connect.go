@@ -33,45 +33,20 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// PguuidServiceCreateProductProcedure is the fully-qualified name of the PguuidService's
-	// CreateProduct RPC.
-	PguuidServiceCreateProductProcedure = "/pguuid.v1.PguuidService/CreateProduct"
-	// PguuidServiceCreateProductReturnAllProcedure is the fully-qualified name of the PguuidService's
-	// CreateProductReturnAll RPC.
-	PguuidServiceCreateProductReturnAllProcedure = "/pguuid.v1.PguuidService/CreateProductReturnAll"
-	// PguuidServiceCreateProductReturnPartialProcedure is the fully-qualified name of the
-	// PguuidService's CreateProductReturnPartial RPC.
-	PguuidServiceCreateProductReturnPartialProcedure = "/pguuid.v1.PguuidService/CreateProductReturnPartial"
-	// PguuidServiceCreateUserProcedure is the fully-qualified name of the PguuidService's CreateUser
-	// RPC.
-	PguuidServiceCreateUserProcedure = "/pguuid.v1.PguuidService/CreateUser"
-	// PguuidServiceCreateUserReturnAllProcedure is the fully-qualified name of the PguuidService's
-	// CreateUserReturnAll RPC.
-	PguuidServiceCreateUserReturnAllProcedure = "/pguuid.v1.PguuidService/CreateUserReturnAll"
-	// PguuidServiceCreateUserReturnPartialProcedure is the fully-qualified name of the PguuidService's
-	// CreateUserReturnPartial RPC.
-	PguuidServiceCreateUserReturnPartialProcedure = "/pguuid.v1.PguuidService/CreateUserReturnPartial"
+	// PguuidServiceGetProductsByIdsProcedure is the fully-qualified name of the PguuidService's
+	// GetProductsByIds RPC.
+	PguuidServiceGetProductsByIdsProcedure = "/pguuid.v1.PguuidService/GetProductsByIds"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	pguuidServiceServiceDescriptor                          = v1.File_pguuid_v1_pguuid_proto.Services().ByName("PguuidService")
-	pguuidServiceCreateProductMethodDescriptor              = pguuidServiceServiceDescriptor.Methods().ByName("CreateProduct")
-	pguuidServiceCreateProductReturnAllMethodDescriptor     = pguuidServiceServiceDescriptor.Methods().ByName("CreateProductReturnAll")
-	pguuidServiceCreateProductReturnPartialMethodDescriptor = pguuidServiceServiceDescriptor.Methods().ByName("CreateProductReturnPartial")
-	pguuidServiceCreateUserMethodDescriptor                 = pguuidServiceServiceDescriptor.Methods().ByName("CreateUser")
-	pguuidServiceCreateUserReturnAllMethodDescriptor        = pguuidServiceServiceDescriptor.Methods().ByName("CreateUserReturnAll")
-	pguuidServiceCreateUserReturnPartialMethodDescriptor    = pguuidServiceServiceDescriptor.Methods().ByName("CreateUserReturnPartial")
+	pguuidServiceServiceDescriptor                = v1.File_pguuid_v1_pguuid_proto.Services().ByName("PguuidService")
+	pguuidServiceGetProductsByIdsMethodDescriptor = pguuidServiceServiceDescriptor.Methods().ByName("GetProductsByIds")
 )
 
 // PguuidServiceClient is a client for the pguuid.v1.PguuidService service.
 type PguuidServiceClient interface {
-	CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error)
-	CreateProductReturnAll(context.Context, *connect.Request[v1.CreateProductReturnAllRequest]) (*connect.Response[v1.CreateProductReturnAllResponse], error)
-	CreateProductReturnPartial(context.Context, *connect.Request[v1.CreateProductReturnPartialRequest]) (*connect.Response[v1.CreateProductReturnPartialResponse], error)
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
-	CreateUserReturnAll(context.Context, *connect.Request[v1.CreateUserReturnAllRequest]) (*connect.Response[v1.CreateUserReturnAllResponse], error)
-	CreateUserReturnPartial(context.Context, *connect.Request[v1.CreateUserReturnPartialRequest]) (*connect.Response[v1.CreateUserReturnPartialResponse], error)
+	GetProductsByIds(context.Context, *connect.Request[v1.GetProductsByIdsRequest]) (*connect.Response[v1.GetProductsByIdsResponse], error)
 }
 
 // NewPguuidServiceClient constructs a client for the pguuid.v1.PguuidService service. By default,
@@ -84,40 +59,10 @@ type PguuidServiceClient interface {
 func NewPguuidServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) PguuidServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &pguuidServiceClient{
-		createProduct: connect.NewClient[v1.CreateProductRequest, v1.CreateProductResponse](
+		getProductsByIds: connect.NewClient[v1.GetProductsByIdsRequest, v1.GetProductsByIdsResponse](
 			httpClient,
-			baseURL+PguuidServiceCreateProductProcedure,
-			connect.WithSchema(pguuidServiceCreateProductMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		createProductReturnAll: connect.NewClient[v1.CreateProductReturnAllRequest, v1.CreateProductReturnAllResponse](
-			httpClient,
-			baseURL+PguuidServiceCreateProductReturnAllProcedure,
-			connect.WithSchema(pguuidServiceCreateProductReturnAllMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		createProductReturnPartial: connect.NewClient[v1.CreateProductReturnPartialRequest, v1.CreateProductReturnPartialResponse](
-			httpClient,
-			baseURL+PguuidServiceCreateProductReturnPartialProcedure,
-			connect.WithSchema(pguuidServiceCreateProductReturnPartialMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		createUser: connect.NewClient[v1.CreateUserRequest, v1.CreateUserResponse](
-			httpClient,
-			baseURL+PguuidServiceCreateUserProcedure,
-			connect.WithSchema(pguuidServiceCreateUserMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		createUserReturnAll: connect.NewClient[v1.CreateUserReturnAllRequest, v1.CreateUserReturnAllResponse](
-			httpClient,
-			baseURL+PguuidServiceCreateUserReturnAllProcedure,
-			connect.WithSchema(pguuidServiceCreateUserReturnAllMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		createUserReturnPartial: connect.NewClient[v1.CreateUserReturnPartialRequest, v1.CreateUserReturnPartialResponse](
-			httpClient,
-			baseURL+PguuidServiceCreateUserReturnPartialProcedure,
-			connect.WithSchema(pguuidServiceCreateUserReturnPartialMethodDescriptor),
+			baseURL+PguuidServiceGetProductsByIdsProcedure,
+			connect.WithSchema(pguuidServiceGetProductsByIdsMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -125,52 +70,17 @@ func NewPguuidServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 
 // pguuidServiceClient implements PguuidServiceClient.
 type pguuidServiceClient struct {
-	createProduct              *connect.Client[v1.CreateProductRequest, v1.CreateProductResponse]
-	createProductReturnAll     *connect.Client[v1.CreateProductReturnAllRequest, v1.CreateProductReturnAllResponse]
-	createProductReturnPartial *connect.Client[v1.CreateProductReturnPartialRequest, v1.CreateProductReturnPartialResponse]
-	createUser                 *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
-	createUserReturnAll        *connect.Client[v1.CreateUserReturnAllRequest, v1.CreateUserReturnAllResponse]
-	createUserReturnPartial    *connect.Client[v1.CreateUserReturnPartialRequest, v1.CreateUserReturnPartialResponse]
+	getProductsByIds *connect.Client[v1.GetProductsByIdsRequest, v1.GetProductsByIdsResponse]
 }
 
-// CreateProduct calls pguuid.v1.PguuidService.CreateProduct.
-func (c *pguuidServiceClient) CreateProduct(ctx context.Context, req *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error) {
-	return c.createProduct.CallUnary(ctx, req)
-}
-
-// CreateProductReturnAll calls pguuid.v1.PguuidService.CreateProductReturnAll.
-func (c *pguuidServiceClient) CreateProductReturnAll(ctx context.Context, req *connect.Request[v1.CreateProductReturnAllRequest]) (*connect.Response[v1.CreateProductReturnAllResponse], error) {
-	return c.createProductReturnAll.CallUnary(ctx, req)
-}
-
-// CreateProductReturnPartial calls pguuid.v1.PguuidService.CreateProductReturnPartial.
-func (c *pguuidServiceClient) CreateProductReturnPartial(ctx context.Context, req *connect.Request[v1.CreateProductReturnPartialRequest]) (*connect.Response[v1.CreateProductReturnPartialResponse], error) {
-	return c.createProductReturnPartial.CallUnary(ctx, req)
-}
-
-// CreateUser calls pguuid.v1.PguuidService.CreateUser.
-func (c *pguuidServiceClient) CreateUser(ctx context.Context, req *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
-	return c.createUser.CallUnary(ctx, req)
-}
-
-// CreateUserReturnAll calls pguuid.v1.PguuidService.CreateUserReturnAll.
-func (c *pguuidServiceClient) CreateUserReturnAll(ctx context.Context, req *connect.Request[v1.CreateUserReturnAllRequest]) (*connect.Response[v1.CreateUserReturnAllResponse], error) {
-	return c.createUserReturnAll.CallUnary(ctx, req)
-}
-
-// CreateUserReturnPartial calls pguuid.v1.PguuidService.CreateUserReturnPartial.
-func (c *pguuidServiceClient) CreateUserReturnPartial(ctx context.Context, req *connect.Request[v1.CreateUserReturnPartialRequest]) (*connect.Response[v1.CreateUserReturnPartialResponse], error) {
-	return c.createUserReturnPartial.CallUnary(ctx, req)
+// GetProductsByIds calls pguuid.v1.PguuidService.GetProductsByIds.
+func (c *pguuidServiceClient) GetProductsByIds(ctx context.Context, req *connect.Request[v1.GetProductsByIdsRequest]) (*connect.Response[v1.GetProductsByIdsResponse], error) {
+	return c.getProductsByIds.CallUnary(ctx, req)
 }
 
 // PguuidServiceHandler is an implementation of the pguuid.v1.PguuidService service.
 type PguuidServiceHandler interface {
-	CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error)
-	CreateProductReturnAll(context.Context, *connect.Request[v1.CreateProductReturnAllRequest]) (*connect.Response[v1.CreateProductReturnAllResponse], error)
-	CreateProductReturnPartial(context.Context, *connect.Request[v1.CreateProductReturnPartialRequest]) (*connect.Response[v1.CreateProductReturnPartialResponse], error)
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
-	CreateUserReturnAll(context.Context, *connect.Request[v1.CreateUserReturnAllRequest]) (*connect.Response[v1.CreateUserReturnAllResponse], error)
-	CreateUserReturnPartial(context.Context, *connect.Request[v1.CreateUserReturnPartialRequest]) (*connect.Response[v1.CreateUserReturnPartialResponse], error)
+	GetProductsByIds(context.Context, *connect.Request[v1.GetProductsByIdsRequest]) (*connect.Response[v1.GetProductsByIdsResponse], error)
 }
 
 // NewPguuidServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -179,56 +89,16 @@ type PguuidServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewPguuidServiceHandler(svc PguuidServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	pguuidServiceCreateProductHandler := connect.NewUnaryHandler(
-		PguuidServiceCreateProductProcedure,
-		svc.CreateProduct,
-		connect.WithSchema(pguuidServiceCreateProductMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	pguuidServiceCreateProductReturnAllHandler := connect.NewUnaryHandler(
-		PguuidServiceCreateProductReturnAllProcedure,
-		svc.CreateProductReturnAll,
-		connect.WithSchema(pguuidServiceCreateProductReturnAllMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	pguuidServiceCreateProductReturnPartialHandler := connect.NewUnaryHandler(
-		PguuidServiceCreateProductReturnPartialProcedure,
-		svc.CreateProductReturnPartial,
-		connect.WithSchema(pguuidServiceCreateProductReturnPartialMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	pguuidServiceCreateUserHandler := connect.NewUnaryHandler(
-		PguuidServiceCreateUserProcedure,
-		svc.CreateUser,
-		connect.WithSchema(pguuidServiceCreateUserMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	pguuidServiceCreateUserReturnAllHandler := connect.NewUnaryHandler(
-		PguuidServiceCreateUserReturnAllProcedure,
-		svc.CreateUserReturnAll,
-		connect.WithSchema(pguuidServiceCreateUserReturnAllMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	pguuidServiceCreateUserReturnPartialHandler := connect.NewUnaryHandler(
-		PguuidServiceCreateUserReturnPartialProcedure,
-		svc.CreateUserReturnPartial,
-		connect.WithSchema(pguuidServiceCreateUserReturnPartialMethodDescriptor),
+	pguuidServiceGetProductsByIdsHandler := connect.NewUnaryHandler(
+		PguuidServiceGetProductsByIdsProcedure,
+		svc.GetProductsByIds,
+		connect.WithSchema(pguuidServiceGetProductsByIdsMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/pguuid.v1.PguuidService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case PguuidServiceCreateProductProcedure:
-			pguuidServiceCreateProductHandler.ServeHTTP(w, r)
-		case PguuidServiceCreateProductReturnAllProcedure:
-			pguuidServiceCreateProductReturnAllHandler.ServeHTTP(w, r)
-		case PguuidServiceCreateProductReturnPartialProcedure:
-			pguuidServiceCreateProductReturnPartialHandler.ServeHTTP(w, r)
-		case PguuidServiceCreateUserProcedure:
-			pguuidServiceCreateUserHandler.ServeHTTP(w, r)
-		case PguuidServiceCreateUserReturnAllProcedure:
-			pguuidServiceCreateUserReturnAllHandler.ServeHTTP(w, r)
-		case PguuidServiceCreateUserReturnPartialProcedure:
-			pguuidServiceCreateUserReturnPartialHandler.ServeHTTP(w, r)
+		case PguuidServiceGetProductsByIdsProcedure:
+			pguuidServiceGetProductsByIdsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -238,26 +108,6 @@ func NewPguuidServiceHandler(svc PguuidServiceHandler, opts ...connect.HandlerOp
 // UnimplementedPguuidServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedPguuidServiceHandler struct{}
 
-func (UnimplementedPguuidServiceHandler) CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pguuid.v1.PguuidService.CreateProduct is not implemented"))
-}
-
-func (UnimplementedPguuidServiceHandler) CreateProductReturnAll(context.Context, *connect.Request[v1.CreateProductReturnAllRequest]) (*connect.Response[v1.CreateProductReturnAllResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pguuid.v1.PguuidService.CreateProductReturnAll is not implemented"))
-}
-
-func (UnimplementedPguuidServiceHandler) CreateProductReturnPartial(context.Context, *connect.Request[v1.CreateProductReturnPartialRequest]) (*connect.Response[v1.CreateProductReturnPartialResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pguuid.v1.PguuidService.CreateProductReturnPartial is not implemented"))
-}
-
-func (UnimplementedPguuidServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pguuid.v1.PguuidService.CreateUser is not implemented"))
-}
-
-func (UnimplementedPguuidServiceHandler) CreateUserReturnAll(context.Context, *connect.Request[v1.CreateUserReturnAllRequest]) (*connect.Response[v1.CreateUserReturnAllResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pguuid.v1.PguuidService.CreateUserReturnAll is not implemented"))
-}
-
-func (UnimplementedPguuidServiceHandler) CreateUserReturnPartial(context.Context, *connect.Request[v1.CreateUserReturnPartialRequest]) (*connect.Response[v1.CreateUserReturnPartialResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pguuid.v1.PguuidService.CreateUserReturnPartial is not implemented"))
+func (UnimplementedPguuidServiceHandler) GetProductsByIds(context.Context, *connect.Request[v1.GetProductsByIdsRequest]) (*connect.Response[v1.GetProductsByIdsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pguuid.v1.PguuidService.GetProductsByIds is not implemented"))
 }

@@ -33,45 +33,20 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// GoogleuuidServiceCreateProductProcedure is the fully-qualified name of the GoogleuuidService's
-	// CreateProduct RPC.
-	GoogleuuidServiceCreateProductProcedure = "/googleuuid.v1.GoogleuuidService/CreateProduct"
-	// GoogleuuidServiceCreateProductReturnAllProcedure is the fully-qualified name of the
-	// GoogleuuidService's CreateProductReturnAll RPC.
-	GoogleuuidServiceCreateProductReturnAllProcedure = "/googleuuid.v1.GoogleuuidService/CreateProductReturnAll"
-	// GoogleuuidServiceCreateProductReturnPartialProcedure is the fully-qualified name of the
-	// GoogleuuidService's CreateProductReturnPartial RPC.
-	GoogleuuidServiceCreateProductReturnPartialProcedure = "/googleuuid.v1.GoogleuuidService/CreateProductReturnPartial"
-	// GoogleuuidServiceCreateUserProcedure is the fully-qualified name of the GoogleuuidService's
-	// CreateUser RPC.
-	GoogleuuidServiceCreateUserProcedure = "/googleuuid.v1.GoogleuuidService/CreateUser"
-	// GoogleuuidServiceCreateUserReturnAllProcedure is the fully-qualified name of the
-	// GoogleuuidService's CreateUserReturnAll RPC.
-	GoogleuuidServiceCreateUserReturnAllProcedure = "/googleuuid.v1.GoogleuuidService/CreateUserReturnAll"
-	// GoogleuuidServiceCreateUserReturnPartialProcedure is the fully-qualified name of the
-	// GoogleuuidService's CreateUserReturnPartial RPC.
-	GoogleuuidServiceCreateUserReturnPartialProcedure = "/googleuuid.v1.GoogleuuidService/CreateUserReturnPartial"
+	// GoogleuuidServiceGetProductsByIdsProcedure is the fully-qualified name of the GoogleuuidService's
+	// GetProductsByIds RPC.
+	GoogleuuidServiceGetProductsByIdsProcedure = "/googleuuid.v1.GoogleuuidService/GetProductsByIds"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	googleuuidServiceServiceDescriptor                          = v1.File_googleuuid_v1_googleuuid_proto.Services().ByName("GoogleuuidService")
-	googleuuidServiceCreateProductMethodDescriptor              = googleuuidServiceServiceDescriptor.Methods().ByName("CreateProduct")
-	googleuuidServiceCreateProductReturnAllMethodDescriptor     = googleuuidServiceServiceDescriptor.Methods().ByName("CreateProductReturnAll")
-	googleuuidServiceCreateProductReturnPartialMethodDescriptor = googleuuidServiceServiceDescriptor.Methods().ByName("CreateProductReturnPartial")
-	googleuuidServiceCreateUserMethodDescriptor                 = googleuuidServiceServiceDescriptor.Methods().ByName("CreateUser")
-	googleuuidServiceCreateUserReturnAllMethodDescriptor        = googleuuidServiceServiceDescriptor.Methods().ByName("CreateUserReturnAll")
-	googleuuidServiceCreateUserReturnPartialMethodDescriptor    = googleuuidServiceServiceDescriptor.Methods().ByName("CreateUserReturnPartial")
+	googleuuidServiceServiceDescriptor                = v1.File_googleuuid_v1_googleuuid_proto.Services().ByName("GoogleuuidService")
+	googleuuidServiceGetProductsByIdsMethodDescriptor = googleuuidServiceServiceDescriptor.Methods().ByName("GetProductsByIds")
 )
 
 // GoogleuuidServiceClient is a client for the googleuuid.v1.GoogleuuidService service.
 type GoogleuuidServiceClient interface {
-	CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error)
-	CreateProductReturnAll(context.Context, *connect.Request[v1.CreateProductReturnAllRequest]) (*connect.Response[v1.CreateProductReturnAllResponse], error)
-	CreateProductReturnPartial(context.Context, *connect.Request[v1.CreateProductReturnPartialRequest]) (*connect.Response[v1.CreateProductReturnPartialResponse], error)
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
-	CreateUserReturnAll(context.Context, *connect.Request[v1.CreateUserReturnAllRequest]) (*connect.Response[v1.CreateUserReturnAllResponse], error)
-	CreateUserReturnPartial(context.Context, *connect.Request[v1.CreateUserReturnPartialRequest]) (*connect.Response[v1.CreateUserReturnPartialResponse], error)
+	GetProductsByIds(context.Context, *connect.Request[v1.GetProductsByIdsRequest]) (*connect.Response[v1.GetProductsByIdsResponse], error)
 }
 
 // NewGoogleuuidServiceClient constructs a client for the googleuuid.v1.GoogleuuidService service.
@@ -84,40 +59,10 @@ type GoogleuuidServiceClient interface {
 func NewGoogleuuidServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) GoogleuuidServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &googleuuidServiceClient{
-		createProduct: connect.NewClient[v1.CreateProductRequest, v1.CreateProductResponse](
+		getProductsByIds: connect.NewClient[v1.GetProductsByIdsRequest, v1.GetProductsByIdsResponse](
 			httpClient,
-			baseURL+GoogleuuidServiceCreateProductProcedure,
-			connect.WithSchema(googleuuidServiceCreateProductMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		createProductReturnAll: connect.NewClient[v1.CreateProductReturnAllRequest, v1.CreateProductReturnAllResponse](
-			httpClient,
-			baseURL+GoogleuuidServiceCreateProductReturnAllProcedure,
-			connect.WithSchema(googleuuidServiceCreateProductReturnAllMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		createProductReturnPartial: connect.NewClient[v1.CreateProductReturnPartialRequest, v1.CreateProductReturnPartialResponse](
-			httpClient,
-			baseURL+GoogleuuidServiceCreateProductReturnPartialProcedure,
-			connect.WithSchema(googleuuidServiceCreateProductReturnPartialMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		createUser: connect.NewClient[v1.CreateUserRequest, v1.CreateUserResponse](
-			httpClient,
-			baseURL+GoogleuuidServiceCreateUserProcedure,
-			connect.WithSchema(googleuuidServiceCreateUserMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		createUserReturnAll: connect.NewClient[v1.CreateUserReturnAllRequest, v1.CreateUserReturnAllResponse](
-			httpClient,
-			baseURL+GoogleuuidServiceCreateUserReturnAllProcedure,
-			connect.WithSchema(googleuuidServiceCreateUserReturnAllMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		createUserReturnPartial: connect.NewClient[v1.CreateUserReturnPartialRequest, v1.CreateUserReturnPartialResponse](
-			httpClient,
-			baseURL+GoogleuuidServiceCreateUserReturnPartialProcedure,
-			connect.WithSchema(googleuuidServiceCreateUserReturnPartialMethodDescriptor),
+			baseURL+GoogleuuidServiceGetProductsByIdsProcedure,
+			connect.WithSchema(googleuuidServiceGetProductsByIdsMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -125,52 +70,17 @@ func NewGoogleuuidServiceClient(httpClient connect.HTTPClient, baseURL string, o
 
 // googleuuidServiceClient implements GoogleuuidServiceClient.
 type googleuuidServiceClient struct {
-	createProduct              *connect.Client[v1.CreateProductRequest, v1.CreateProductResponse]
-	createProductReturnAll     *connect.Client[v1.CreateProductReturnAllRequest, v1.CreateProductReturnAllResponse]
-	createProductReturnPartial *connect.Client[v1.CreateProductReturnPartialRequest, v1.CreateProductReturnPartialResponse]
-	createUser                 *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
-	createUserReturnAll        *connect.Client[v1.CreateUserReturnAllRequest, v1.CreateUserReturnAllResponse]
-	createUserReturnPartial    *connect.Client[v1.CreateUserReturnPartialRequest, v1.CreateUserReturnPartialResponse]
+	getProductsByIds *connect.Client[v1.GetProductsByIdsRequest, v1.GetProductsByIdsResponse]
 }
 
-// CreateProduct calls googleuuid.v1.GoogleuuidService.CreateProduct.
-func (c *googleuuidServiceClient) CreateProduct(ctx context.Context, req *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error) {
-	return c.createProduct.CallUnary(ctx, req)
-}
-
-// CreateProductReturnAll calls googleuuid.v1.GoogleuuidService.CreateProductReturnAll.
-func (c *googleuuidServiceClient) CreateProductReturnAll(ctx context.Context, req *connect.Request[v1.CreateProductReturnAllRequest]) (*connect.Response[v1.CreateProductReturnAllResponse], error) {
-	return c.createProductReturnAll.CallUnary(ctx, req)
-}
-
-// CreateProductReturnPartial calls googleuuid.v1.GoogleuuidService.CreateProductReturnPartial.
-func (c *googleuuidServiceClient) CreateProductReturnPartial(ctx context.Context, req *connect.Request[v1.CreateProductReturnPartialRequest]) (*connect.Response[v1.CreateProductReturnPartialResponse], error) {
-	return c.createProductReturnPartial.CallUnary(ctx, req)
-}
-
-// CreateUser calls googleuuid.v1.GoogleuuidService.CreateUser.
-func (c *googleuuidServiceClient) CreateUser(ctx context.Context, req *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
-	return c.createUser.CallUnary(ctx, req)
-}
-
-// CreateUserReturnAll calls googleuuid.v1.GoogleuuidService.CreateUserReturnAll.
-func (c *googleuuidServiceClient) CreateUserReturnAll(ctx context.Context, req *connect.Request[v1.CreateUserReturnAllRequest]) (*connect.Response[v1.CreateUserReturnAllResponse], error) {
-	return c.createUserReturnAll.CallUnary(ctx, req)
-}
-
-// CreateUserReturnPartial calls googleuuid.v1.GoogleuuidService.CreateUserReturnPartial.
-func (c *googleuuidServiceClient) CreateUserReturnPartial(ctx context.Context, req *connect.Request[v1.CreateUserReturnPartialRequest]) (*connect.Response[v1.CreateUserReturnPartialResponse], error) {
-	return c.createUserReturnPartial.CallUnary(ctx, req)
+// GetProductsByIds calls googleuuid.v1.GoogleuuidService.GetProductsByIds.
+func (c *googleuuidServiceClient) GetProductsByIds(ctx context.Context, req *connect.Request[v1.GetProductsByIdsRequest]) (*connect.Response[v1.GetProductsByIdsResponse], error) {
+	return c.getProductsByIds.CallUnary(ctx, req)
 }
 
 // GoogleuuidServiceHandler is an implementation of the googleuuid.v1.GoogleuuidService service.
 type GoogleuuidServiceHandler interface {
-	CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error)
-	CreateProductReturnAll(context.Context, *connect.Request[v1.CreateProductReturnAllRequest]) (*connect.Response[v1.CreateProductReturnAllResponse], error)
-	CreateProductReturnPartial(context.Context, *connect.Request[v1.CreateProductReturnPartialRequest]) (*connect.Response[v1.CreateProductReturnPartialResponse], error)
-	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
-	CreateUserReturnAll(context.Context, *connect.Request[v1.CreateUserReturnAllRequest]) (*connect.Response[v1.CreateUserReturnAllResponse], error)
-	CreateUserReturnPartial(context.Context, *connect.Request[v1.CreateUserReturnPartialRequest]) (*connect.Response[v1.CreateUserReturnPartialResponse], error)
+	GetProductsByIds(context.Context, *connect.Request[v1.GetProductsByIdsRequest]) (*connect.Response[v1.GetProductsByIdsResponse], error)
 }
 
 // NewGoogleuuidServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -179,56 +89,16 @@ type GoogleuuidServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewGoogleuuidServiceHandler(svc GoogleuuidServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	googleuuidServiceCreateProductHandler := connect.NewUnaryHandler(
-		GoogleuuidServiceCreateProductProcedure,
-		svc.CreateProduct,
-		connect.WithSchema(googleuuidServiceCreateProductMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	googleuuidServiceCreateProductReturnAllHandler := connect.NewUnaryHandler(
-		GoogleuuidServiceCreateProductReturnAllProcedure,
-		svc.CreateProductReturnAll,
-		connect.WithSchema(googleuuidServiceCreateProductReturnAllMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	googleuuidServiceCreateProductReturnPartialHandler := connect.NewUnaryHandler(
-		GoogleuuidServiceCreateProductReturnPartialProcedure,
-		svc.CreateProductReturnPartial,
-		connect.WithSchema(googleuuidServiceCreateProductReturnPartialMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	googleuuidServiceCreateUserHandler := connect.NewUnaryHandler(
-		GoogleuuidServiceCreateUserProcedure,
-		svc.CreateUser,
-		connect.WithSchema(googleuuidServiceCreateUserMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	googleuuidServiceCreateUserReturnAllHandler := connect.NewUnaryHandler(
-		GoogleuuidServiceCreateUserReturnAllProcedure,
-		svc.CreateUserReturnAll,
-		connect.WithSchema(googleuuidServiceCreateUserReturnAllMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	googleuuidServiceCreateUserReturnPartialHandler := connect.NewUnaryHandler(
-		GoogleuuidServiceCreateUserReturnPartialProcedure,
-		svc.CreateUserReturnPartial,
-		connect.WithSchema(googleuuidServiceCreateUserReturnPartialMethodDescriptor),
+	googleuuidServiceGetProductsByIdsHandler := connect.NewUnaryHandler(
+		GoogleuuidServiceGetProductsByIdsProcedure,
+		svc.GetProductsByIds,
+		connect.WithSchema(googleuuidServiceGetProductsByIdsMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/googleuuid.v1.GoogleuuidService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case GoogleuuidServiceCreateProductProcedure:
-			googleuuidServiceCreateProductHandler.ServeHTTP(w, r)
-		case GoogleuuidServiceCreateProductReturnAllProcedure:
-			googleuuidServiceCreateProductReturnAllHandler.ServeHTTP(w, r)
-		case GoogleuuidServiceCreateProductReturnPartialProcedure:
-			googleuuidServiceCreateProductReturnPartialHandler.ServeHTTP(w, r)
-		case GoogleuuidServiceCreateUserProcedure:
-			googleuuidServiceCreateUserHandler.ServeHTTP(w, r)
-		case GoogleuuidServiceCreateUserReturnAllProcedure:
-			googleuuidServiceCreateUserReturnAllHandler.ServeHTTP(w, r)
-		case GoogleuuidServiceCreateUserReturnPartialProcedure:
-			googleuuidServiceCreateUserReturnPartialHandler.ServeHTTP(w, r)
+		case GoogleuuidServiceGetProductsByIdsProcedure:
+			googleuuidServiceGetProductsByIdsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -238,26 +108,6 @@ func NewGoogleuuidServiceHandler(svc GoogleuuidServiceHandler, opts ...connect.H
 // UnimplementedGoogleuuidServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedGoogleuuidServiceHandler struct{}
 
-func (UnimplementedGoogleuuidServiceHandler) CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("googleuuid.v1.GoogleuuidService.CreateProduct is not implemented"))
-}
-
-func (UnimplementedGoogleuuidServiceHandler) CreateProductReturnAll(context.Context, *connect.Request[v1.CreateProductReturnAllRequest]) (*connect.Response[v1.CreateProductReturnAllResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("googleuuid.v1.GoogleuuidService.CreateProductReturnAll is not implemented"))
-}
-
-func (UnimplementedGoogleuuidServiceHandler) CreateProductReturnPartial(context.Context, *connect.Request[v1.CreateProductReturnPartialRequest]) (*connect.Response[v1.CreateProductReturnPartialResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("googleuuid.v1.GoogleuuidService.CreateProductReturnPartial is not implemented"))
-}
-
-func (UnimplementedGoogleuuidServiceHandler) CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("googleuuid.v1.GoogleuuidService.CreateUser is not implemented"))
-}
-
-func (UnimplementedGoogleuuidServiceHandler) CreateUserReturnAll(context.Context, *connect.Request[v1.CreateUserReturnAllRequest]) (*connect.Response[v1.CreateUserReturnAllResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("googleuuid.v1.GoogleuuidService.CreateUserReturnAll is not implemented"))
-}
-
-func (UnimplementedGoogleuuidServiceHandler) CreateUserReturnPartial(context.Context, *connect.Request[v1.CreateUserReturnPartialRequest]) (*connect.Response[v1.CreateUserReturnPartialResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("googleuuid.v1.GoogleuuidService.CreateUserReturnPartial is not implemented"))
+func (UnimplementedGoogleuuidServiceHandler) GetProductsByIds(context.Context, *connect.Request[v1.GetProductsByIdsRequest]) (*connect.Response[v1.GetProductsByIdsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("googleuuid.v1.GoogleuuidService.GetProductsByIds is not implemented"))
 }

@@ -7,85 +7,19 @@ import "google/protobuf/wrappers.proto";
 option go_package = "uuidcheck/api/pguuid/v1";
 
 service PguuidService {
-  rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse) {}
-
-  rpc CreateProductReturnAll(CreateProductReturnAllRequest) returns (CreateProductReturnAllResponse) {}
-
-  rpc CreateProductReturnPartial(CreateProductReturnPartialRequest) returns (CreateProductReturnPartialResponse) {}
-
-  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
-
-  rpc CreateUserReturnAll(CreateUserReturnAllRequest) returns (CreateUserReturnAllResponse) {}
-
-  rpc CreateUserReturnPartial(CreateUserReturnPartialRequest) returns (CreateUserReturnPartialResponse) {}
+  rpc GetProductsByIds(GetProductsByIdsRequest) returns (GetProductsByIdsResponse) {}
 }
 
 message Category {
   int32 id = 1;
 }
 
-message CreateProductRequest {
-  int32 id = 1;
-  google.protobuf.Int32Value category = 2;
+message GetProductsByIdsRequest {
+  repeated google.protobuf.StringValue dollar_1 = 1;
 }
 
-message CreateProductResponse {
-  int32 value = 1;
-}
-
-message CreateProductReturnAllRequest {
-  int32 id = 1;
-  google.protobuf.Int32Value category = 2;
-}
-
-message CreateProductReturnAllResponse {
-  Product product = 1;
-}
-
-message CreateProductReturnPartialRequest {
-  int32 id = 1;
-  google.protobuf.Int32Value category = 2;
-}
-
-message CreateProductReturnPartialResponse {
-  CreateProductReturnPartialRow create_product_return_partial_row = 1;
-}
-
-message CreateProductReturnPartialRow {
-  int32 id = 1;
-  google.protobuf.StringValue name = 2;
-}
-
-message CreateUserRequest {
-  google.protobuf.StringValue id = 1;
-  google.protobuf.StringValue location = 2;
-}
-
-message CreateUserResponse {
-  google.protobuf.StringValue value = 1;
-}
-
-message CreateUserReturnAllRequest {
-  google.protobuf.StringValue id = 1;
-  google.protobuf.StringValue location = 2;
-}
-
-message CreateUserReturnAllResponse {
-  User user = 1;
-}
-
-message CreateUserReturnPartialRequest {
-  google.protobuf.StringValue id = 1;
-  google.protobuf.StringValue location = 2;
-}
-
-message CreateUserReturnPartialResponse {
-  CreateUserReturnPartialRow create_user_return_partial_row = 1;
-}
-
-message CreateUserReturnPartialRow {
-  google.protobuf.StringValue id = 1;
-  google.protobuf.StringValue name = 2;
+message GetProductsByIdsResponse {
+  repeated Product list = 1;
 }
 
 message Location {

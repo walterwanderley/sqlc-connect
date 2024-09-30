@@ -3,32 +3,10 @@
 package googleuuid
 
 import (
-	"encoding/json"
-
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
 	pb "uuidcheck/api/googleuuid/v1"
 )
-
-func toCreateProductReturnPartialRow(in CreateProductReturnPartialRow) *pb.CreateProductReturnPartialRow {
-
-	out := new(pb.CreateProductReturnPartialRow)
-	out.Id = in.ID
-	if in.Name.Valid {
-		out.Name = wrapperspb.String(in.Name.String)
-	}
-	return out
-}
-
-func toCreateUserReturnPartialRow(in CreateUserReturnPartialRow) *pb.CreateUserReturnPartialRow {
-
-	out := new(pb.CreateUserReturnPartialRow)
-	out.Id = in.ID.String()
-	if in.Name.Valid {
-		out.Name = wrapperspb.String(in.Name.String)
-	}
-	return out
-}
 
 func toProduct(in Product) *pb.Product {
 
@@ -36,19 +14,6 @@ func toProduct(in Product) *pb.Product {
 	out.Id = in.ID
 	if in.Category.Valid {
 		out.Category = wrapperspb.Int32(in.Category.Int32)
-	}
-	if in.Name.Valid {
-		out.Name = wrapperspb.String(in.Name.String)
-	}
-	return out
-}
-
-func toUser(in User) *pb.User {
-
-	out := new(pb.User)
-	out.Id = in.ID.String()
-	if v, err := json.Marshal(in.Location); err == nil {
-		out.Location = wrapperspb.String(string(v))
 	}
 	if in.Name.Valid {
 		out.Name = wrapperspb.String(in.Name.String)
