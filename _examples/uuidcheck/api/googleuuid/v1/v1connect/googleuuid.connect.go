@@ -33,6 +33,9 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// GoogleuuidServiceCreateLocationTransactionsProcedure is the fully-qualified name of the
+	// GoogleuuidService's CreateLocationTransactions RPC.
+	GoogleuuidServiceCreateLocationTransactionsProcedure = "/googleuuid.v1.GoogleuuidService/CreateLocationTransactions"
 	// GoogleuuidServiceCreateProductProcedure is the fully-qualified name of the GoogleuuidService's
 	// CreateProduct RPC.
 	GoogleuuidServiceCreateProductProcedure = "/googleuuid.v1.GoogleuuidService/CreateProduct"
@@ -59,6 +62,7 @@ const (
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
 	googleuuidServiceServiceDescriptor                          = v1.File_googleuuid_v1_googleuuid_proto.Services().ByName("GoogleuuidService")
+	googleuuidServiceCreateLocationTransactionsMethodDescriptor = googleuuidServiceServiceDescriptor.Methods().ByName("CreateLocationTransactions")
 	googleuuidServiceCreateProductMethodDescriptor              = googleuuidServiceServiceDescriptor.Methods().ByName("CreateProduct")
 	googleuuidServiceCreateProductReturnAllMethodDescriptor     = googleuuidServiceServiceDescriptor.Methods().ByName("CreateProductReturnAll")
 	googleuuidServiceCreateProductReturnPartialMethodDescriptor = googleuuidServiceServiceDescriptor.Methods().ByName("CreateProductReturnPartial")
@@ -70,6 +74,7 @@ var (
 
 // GoogleuuidServiceClient is a client for the googleuuid.v1.GoogleuuidService service.
 type GoogleuuidServiceClient interface {
+	CreateLocationTransactions(context.Context, *connect.Request[v1.CreateLocationTransactionsRequest]) (*connect.Response[v1.CreateLocationTransactionsResponse], error)
 	CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error)
 	CreateProductReturnAll(context.Context, *connect.Request[v1.CreateProductReturnAllRequest]) (*connect.Response[v1.CreateProductReturnAllResponse], error)
 	CreateProductReturnPartial(context.Context, *connect.Request[v1.CreateProductReturnPartialRequest]) (*connect.Response[v1.CreateProductReturnPartialResponse], error)
@@ -89,6 +94,12 @@ type GoogleuuidServiceClient interface {
 func NewGoogleuuidServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) GoogleuuidServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &googleuuidServiceClient{
+		createLocationTransactions: connect.NewClient[v1.CreateLocationTransactionsRequest, v1.CreateLocationTransactionsResponse](
+			httpClient,
+			baseURL+GoogleuuidServiceCreateLocationTransactionsProcedure,
+			connect.WithSchema(googleuuidServiceCreateLocationTransactionsMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		createProduct: connect.NewClient[v1.CreateProductRequest, v1.CreateProductResponse](
 			httpClient,
 			baseURL+GoogleuuidServiceCreateProductProcedure,
@@ -136,6 +147,7 @@ func NewGoogleuuidServiceClient(httpClient connect.HTTPClient, baseURL string, o
 
 // googleuuidServiceClient implements GoogleuuidServiceClient.
 type googleuuidServiceClient struct {
+	createLocationTransactions *connect.Client[v1.CreateLocationTransactionsRequest, v1.CreateLocationTransactionsResponse]
 	createProduct              *connect.Client[v1.CreateProductRequest, v1.CreateProductResponse]
 	createProductReturnAll     *connect.Client[v1.CreateProductReturnAllRequest, v1.CreateProductReturnAllResponse]
 	createProductReturnPartial *connect.Client[v1.CreateProductReturnPartialRequest, v1.CreateProductReturnPartialResponse]
@@ -143,6 +155,11 @@ type googleuuidServiceClient struct {
 	createUserReturnAll        *connect.Client[v1.CreateUserReturnAllRequest, v1.CreateUserReturnAllResponse]
 	createUserReturnPartial    *connect.Client[v1.CreateUserReturnPartialRequest, v1.CreateUserReturnPartialResponse]
 	getProductsByIds           *connect.Client[v1.GetProductsByIdsRequest, v1.GetProductsByIdsResponse]
+}
+
+// CreateLocationTransactions calls googleuuid.v1.GoogleuuidService.CreateLocationTransactions.
+func (c *googleuuidServiceClient) CreateLocationTransactions(ctx context.Context, req *connect.Request[v1.CreateLocationTransactionsRequest]) (*connect.Response[v1.CreateLocationTransactionsResponse], error) {
+	return c.createLocationTransactions.CallUnary(ctx, req)
 }
 
 // CreateProduct calls googleuuid.v1.GoogleuuidService.CreateProduct.
@@ -182,6 +199,7 @@ func (c *googleuuidServiceClient) GetProductsByIds(ctx context.Context, req *con
 
 // GoogleuuidServiceHandler is an implementation of the googleuuid.v1.GoogleuuidService service.
 type GoogleuuidServiceHandler interface {
+	CreateLocationTransactions(context.Context, *connect.Request[v1.CreateLocationTransactionsRequest]) (*connect.Response[v1.CreateLocationTransactionsResponse], error)
 	CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error)
 	CreateProductReturnAll(context.Context, *connect.Request[v1.CreateProductReturnAllRequest]) (*connect.Response[v1.CreateProductReturnAllResponse], error)
 	CreateProductReturnPartial(context.Context, *connect.Request[v1.CreateProductReturnPartialRequest]) (*connect.Response[v1.CreateProductReturnPartialResponse], error)
@@ -197,6 +215,12 @@ type GoogleuuidServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewGoogleuuidServiceHandler(svc GoogleuuidServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	googleuuidServiceCreateLocationTransactionsHandler := connect.NewUnaryHandler(
+		GoogleuuidServiceCreateLocationTransactionsProcedure,
+		svc.CreateLocationTransactions,
+		connect.WithSchema(googleuuidServiceCreateLocationTransactionsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	googleuuidServiceCreateProductHandler := connect.NewUnaryHandler(
 		GoogleuuidServiceCreateProductProcedure,
 		svc.CreateProduct,
@@ -241,6 +265,8 @@ func NewGoogleuuidServiceHandler(svc GoogleuuidServiceHandler, opts ...connect.H
 	)
 	return "/googleuuid.v1.GoogleuuidService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case GoogleuuidServiceCreateLocationTransactionsProcedure:
+			googleuuidServiceCreateLocationTransactionsHandler.ServeHTTP(w, r)
 		case GoogleuuidServiceCreateProductProcedure:
 			googleuuidServiceCreateProductHandler.ServeHTTP(w, r)
 		case GoogleuuidServiceCreateProductReturnAllProcedure:
@@ -263,6 +289,10 @@ func NewGoogleuuidServiceHandler(svc GoogleuuidServiceHandler, opts ...connect.H
 
 // UnimplementedGoogleuuidServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedGoogleuuidServiceHandler struct{}
+
+func (UnimplementedGoogleuuidServiceHandler) CreateLocationTransactions(context.Context, *connect.Request[v1.CreateLocationTransactionsRequest]) (*connect.Response[v1.CreateLocationTransactionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("googleuuid.v1.GoogleuuidService.CreateLocationTransactions is not implemented"))
+}
 
 func (UnimplementedGoogleuuidServiceHandler) CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("googleuuid.v1.GoogleuuidService.CreateProduct is not implemented"))

@@ -33,6 +33,9 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// PguuidServiceCreateLocationTransactionsProcedure is the fully-qualified name of the
+	// PguuidService's CreateLocationTransactions RPC.
+	PguuidServiceCreateLocationTransactionsProcedure = "/pguuid.v1.PguuidService/CreateLocationTransactions"
 	// PguuidServiceCreateProductProcedure is the fully-qualified name of the PguuidService's
 	// CreateProduct RPC.
 	PguuidServiceCreateProductProcedure = "/pguuid.v1.PguuidService/CreateProduct"
@@ -59,6 +62,7 @@ const (
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
 	pguuidServiceServiceDescriptor                          = v1.File_pguuid_v1_pguuid_proto.Services().ByName("PguuidService")
+	pguuidServiceCreateLocationTransactionsMethodDescriptor = pguuidServiceServiceDescriptor.Methods().ByName("CreateLocationTransactions")
 	pguuidServiceCreateProductMethodDescriptor              = pguuidServiceServiceDescriptor.Methods().ByName("CreateProduct")
 	pguuidServiceCreateProductReturnAllMethodDescriptor     = pguuidServiceServiceDescriptor.Methods().ByName("CreateProductReturnAll")
 	pguuidServiceCreateProductReturnPartialMethodDescriptor = pguuidServiceServiceDescriptor.Methods().ByName("CreateProductReturnPartial")
@@ -70,6 +74,7 @@ var (
 
 // PguuidServiceClient is a client for the pguuid.v1.PguuidService service.
 type PguuidServiceClient interface {
+	CreateLocationTransactions(context.Context, *connect.Request[v1.CreateLocationTransactionsRequest]) (*connect.Response[v1.CreateLocationTransactionsResponse], error)
 	CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error)
 	CreateProductReturnAll(context.Context, *connect.Request[v1.CreateProductReturnAllRequest]) (*connect.Response[v1.CreateProductReturnAllResponse], error)
 	CreateProductReturnPartial(context.Context, *connect.Request[v1.CreateProductReturnPartialRequest]) (*connect.Response[v1.CreateProductReturnPartialResponse], error)
@@ -89,6 +94,12 @@ type PguuidServiceClient interface {
 func NewPguuidServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) PguuidServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &pguuidServiceClient{
+		createLocationTransactions: connect.NewClient[v1.CreateLocationTransactionsRequest, v1.CreateLocationTransactionsResponse](
+			httpClient,
+			baseURL+PguuidServiceCreateLocationTransactionsProcedure,
+			connect.WithSchema(pguuidServiceCreateLocationTransactionsMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		createProduct: connect.NewClient[v1.CreateProductRequest, v1.CreateProductResponse](
 			httpClient,
 			baseURL+PguuidServiceCreateProductProcedure,
@@ -136,6 +147,7 @@ func NewPguuidServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 
 // pguuidServiceClient implements PguuidServiceClient.
 type pguuidServiceClient struct {
+	createLocationTransactions *connect.Client[v1.CreateLocationTransactionsRequest, v1.CreateLocationTransactionsResponse]
 	createProduct              *connect.Client[v1.CreateProductRequest, v1.CreateProductResponse]
 	createProductReturnAll     *connect.Client[v1.CreateProductReturnAllRequest, v1.CreateProductReturnAllResponse]
 	createProductReturnPartial *connect.Client[v1.CreateProductReturnPartialRequest, v1.CreateProductReturnPartialResponse]
@@ -143,6 +155,11 @@ type pguuidServiceClient struct {
 	createUserReturnAll        *connect.Client[v1.CreateUserReturnAllRequest, v1.CreateUserReturnAllResponse]
 	createUserReturnPartial    *connect.Client[v1.CreateUserReturnPartialRequest, v1.CreateUserReturnPartialResponse]
 	getProductsByIds           *connect.Client[v1.GetProductsByIdsRequest, v1.GetProductsByIdsResponse]
+}
+
+// CreateLocationTransactions calls pguuid.v1.PguuidService.CreateLocationTransactions.
+func (c *pguuidServiceClient) CreateLocationTransactions(ctx context.Context, req *connect.Request[v1.CreateLocationTransactionsRequest]) (*connect.Response[v1.CreateLocationTransactionsResponse], error) {
+	return c.createLocationTransactions.CallUnary(ctx, req)
 }
 
 // CreateProduct calls pguuid.v1.PguuidService.CreateProduct.
@@ -182,6 +199,7 @@ func (c *pguuidServiceClient) GetProductsByIds(ctx context.Context, req *connect
 
 // PguuidServiceHandler is an implementation of the pguuid.v1.PguuidService service.
 type PguuidServiceHandler interface {
+	CreateLocationTransactions(context.Context, *connect.Request[v1.CreateLocationTransactionsRequest]) (*connect.Response[v1.CreateLocationTransactionsResponse], error)
 	CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error)
 	CreateProductReturnAll(context.Context, *connect.Request[v1.CreateProductReturnAllRequest]) (*connect.Response[v1.CreateProductReturnAllResponse], error)
 	CreateProductReturnPartial(context.Context, *connect.Request[v1.CreateProductReturnPartialRequest]) (*connect.Response[v1.CreateProductReturnPartialResponse], error)
@@ -197,6 +215,12 @@ type PguuidServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewPguuidServiceHandler(svc PguuidServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	pguuidServiceCreateLocationTransactionsHandler := connect.NewUnaryHandler(
+		PguuidServiceCreateLocationTransactionsProcedure,
+		svc.CreateLocationTransactions,
+		connect.WithSchema(pguuidServiceCreateLocationTransactionsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	pguuidServiceCreateProductHandler := connect.NewUnaryHandler(
 		PguuidServiceCreateProductProcedure,
 		svc.CreateProduct,
@@ -241,6 +265,8 @@ func NewPguuidServiceHandler(svc PguuidServiceHandler, opts ...connect.HandlerOp
 	)
 	return "/pguuid.v1.PguuidService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case PguuidServiceCreateLocationTransactionsProcedure:
+			pguuidServiceCreateLocationTransactionsHandler.ServeHTTP(w, r)
 		case PguuidServiceCreateProductProcedure:
 			pguuidServiceCreateProductHandler.ServeHTTP(w, r)
 		case PguuidServiceCreateProductReturnAllProcedure:
@@ -263,6 +289,10 @@ func NewPguuidServiceHandler(svc PguuidServiceHandler, opts ...connect.HandlerOp
 
 // UnimplementedPguuidServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedPguuidServiceHandler struct{}
+
+func (UnimplementedPguuidServiceHandler) CreateLocationTransactions(context.Context, *connect.Request[v1.CreateLocationTransactionsRequest]) (*connect.Response[v1.CreateLocationTransactionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pguuid.v1.PguuidService.CreateLocationTransactions is not implemented"))
+}
 
 func (UnimplementedPguuidServiceHandler) CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("pguuid.v1.PguuidService.CreateProduct is not implemented"))
