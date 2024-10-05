@@ -7,6 +7,8 @@ import "google/protobuf/wrappers.proto";
 option go_package = "uuidcheck/api/googleuuid/v1";
 
 service GoogleuuidService {
+  rpc CreateLocationTransactions(CreateLocationTransactionsRequest) returns (CreateLocationTransactionsResponse) {}
+
   rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse) {}
 
   rpc CreateProductReturnAll(CreateProductReturnAllRequest) returns (CreateProductReturnAllResponse) {}
@@ -18,11 +20,20 @@ service GoogleuuidService {
   rpc CreateUserReturnAll(CreateUserReturnAllRequest) returns (CreateUserReturnAllResponse) {}
 
   rpc CreateUserReturnPartial(CreateUserReturnPartialRequest) returns (CreateUserReturnPartialResponse) {}
+
+  rpc GetProductsByIds(GetProductsByIdsRequest) returns (GetProductsByIdsResponse) {}
 }
 
 message Category {
   int32 id = 1;
 }
+
+message CreateLocationTransactionsRequest {
+  repeated string column1 = 1;
+  repeated string column2 = 2;
+}
+
+message CreateLocationTransactionsResponse {}
 
 message CreateProductRequest {
   int32 id = 1;
@@ -88,8 +99,21 @@ message CreateUserReturnPartialRow {
   google.protobuf.StringValue name = 2;
 }
 
+message GetProductsByIdsRequest {
+  repeated string dollar_1 = 1;
+}
+
+message GetProductsByIdsResponse {
+  repeated Product list = 1;
+}
+
 message Location {
   string id = 1;
+}
+
+message LocationTransaction {
+  string location_id = 1;
+  string transaction_id = 2;
 }
 
 message Product {

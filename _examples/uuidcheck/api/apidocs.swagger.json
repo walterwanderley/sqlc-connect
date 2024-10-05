@@ -19,6 +19,38 @@
     "application/json"
   ],
   "paths": {
+    "/googleuuid.v1.GoogleuuidService/CreateLocationTransactions": {
+      "post": {
+        "operationId": "GoogleuuidService_CreateLocationTransactions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateLocationTransactionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1CreateLocationTransactionsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GoogleuuidService"
+        ]
+      }
+    },
     "/googleuuid.v1.GoogleuuidService/CreateProduct": {
       "post": {
         "operationId": "GoogleuuidService_CreateProduct",
@@ -208,6 +240,70 @@
         ],
         "tags": [
           "GoogleuuidService"
+        ]
+      }
+    },
+    "/googleuuid.v1.GoogleuuidService/GetProductsByIds": {
+      "post": {
+        "operationId": "GoogleuuidService_GetProductsByIds",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1GetProductsByIdsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/googleuuidv1GetProductsByIdsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GoogleuuidService"
+        ]
+      }
+    },
+    "/pguuid.v1.PguuidService/CreateLocationTransactions": {
+      "post": {
+        "operationId": "PguuidService_CreateLocationTransactions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateLocationTransactionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pguuidv1CreateLocationTransactionsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PguuidService"
         ]
       }
     },
@@ -402,9 +498,61 @@
           "PguuidService"
         ]
       }
+    },
+    "/pguuid.v1.PguuidService/GetProductsByIds": {
+      "post": {
+        "operationId": "PguuidService_GetProductsByIds",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pguuidv1GetProductsByIdsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pguuidv1GetProductsByIdsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PguuidService"
+        ]
+      }
     }
   },
   "definitions": {
+    "googleuuidv1CreateLocationTransactionsRequest": {
+      "type": "object",
+      "properties": {
+        "column1": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "column2": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "googleuuidv1CreateLocationTransactionsResponse": {
+      "type": "object"
+    },
     "googleuuidv1CreateProductRequest": {
       "type": "object",
       "properties": {
@@ -549,6 +697,29 @@
         }
       }
     },
+    "googleuuidv1GetProductsByIdsRequest": {
+      "type": "object",
+      "properties": {
+        "dollar1": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "googleuuidv1GetProductsByIdsResponse": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/googleuuidv1Product"
+          }
+        }
+      }
+    },
     "googleuuidv1Product": {
       "type": "object",
       "properties": {
@@ -578,6 +749,26 @@
           "type": "string"
         }
       }
+    },
+    "pguuidv1CreateLocationTransactionsRequest": {
+      "type": "object",
+      "properties": {
+        "column1": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "column2": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "pguuidv1CreateLocationTransactionsResponse": {
+      "type": "object"
     },
     "pguuidv1CreateProductRequest": {
       "type": "object",
@@ -720,6 +911,29 @@
         },
         "name": {
           "type": "string"
+        }
+      }
+    },
+    "pguuidv1GetProductsByIdsRequest": {
+      "type": "object",
+      "properties": {
+        "dollar1": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "pguuidv1GetProductsByIdsResponse": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pguuidv1Product"
+          }
         }
       }
     },

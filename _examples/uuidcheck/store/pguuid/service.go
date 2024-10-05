@@ -22,6 +22,29 @@ type Service struct {
 	querier *Queries
 }
 
+func (s *Service) CreateLocationTransactions(ctx context.Context, req *connect.Request[pb.CreateLocationTransactionsRequest]) (*connect.Response[pb.CreateLocationTransactionsResponse], error) {
+	var arg CreateLocationTransactionsParams
+	arg.Column1 = make([]pgtype.UUID, len(req.Msg.GetColumn1()))
+	for i, s := range req.Msg.GetColumn1() {
+		if err := arg.Column1[i].Scan(s.Value); err != nil {
+			return nil, fmt.Errorf("invalid UUID in Column1 at index %d: %w", i, err)
+		}
+	}
+	arg.Column2 = make([]pgtype.UUID, len(req.Msg.GetColumn2()))
+	for i, s := range req.Msg.GetColumn2() {
+		if err := arg.Column2[i].Scan(s.Value); err != nil {
+			return nil, fmt.Errorf("invalid UUID in Column2 at index %d: %w", i, err)
+		}
+	}
+
+	err := s.querier.CreateLocationTransactions(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "CreateLocationTransactions")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.CreateLocationTransactionsResponse{}), nil
+}
+
 func (s *Service) CreateProduct(ctx context.Context, req *connect.Request[pb.CreateProductRequest]) (*connect.Response[pb.CreateProductResponse], error) {
 	var arg CreateProductParams
 	arg.ID = req.Msg.GetId()
@@ -138,4 +161,25 @@ func (s *Service) CreateUserReturnPartial(ctx context.Context, req *connect.Requ
 		return nil, err
 	}
 	return connect.NewResponse(&pb.CreateUserReturnPartialResponse{CreateUserReturnPartialRow: toCreateUserReturnPartialRow(result)}), nil
+}
+
+func (s *Service) GetProductsByIds(ctx context.Context, req *connect.Request[pb.GetProductsByIdsRequest]) (*connect.Response[pb.GetProductsByIdsResponse], error) {
+	var dollar_1 []pgtype.UUID
+	dollar_1 = make([]pgtype.UUID, len(req.Msg.GetDollar_1()))
+	for i, s := range req.Msg.GetDollar_1() {
+		if err := dollar_1[i].Scan(s.Value); err != nil {
+			return nil, fmt.Errorf("invalid UUID in Dollar_1 at index %d: %w", i, err)
+		}
+	}
+
+	result, err := s.querier.GetProductsByIds(ctx, dollar_1)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "GetProductsByIds")
+		return nil, err
+	}
+	res := new(pb.GetProductsByIdsResponse)
+	for _, r := range result {
+		res.List = append(res.List, toProduct(r))
+	}
+	return connect.NewResponse(res), nil
 }

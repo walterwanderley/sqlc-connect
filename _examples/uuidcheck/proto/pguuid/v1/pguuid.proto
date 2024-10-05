@@ -7,6 +7,8 @@ import "google/protobuf/wrappers.proto";
 option go_package = "uuidcheck/api/pguuid/v1";
 
 service PguuidService {
+  rpc CreateLocationTransactions(CreateLocationTransactionsRequest) returns (CreateLocationTransactionsResponse) {}
+
   rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse) {}
 
   rpc CreateProductReturnAll(CreateProductReturnAllRequest) returns (CreateProductReturnAllResponse) {}
@@ -18,11 +20,20 @@ service PguuidService {
   rpc CreateUserReturnAll(CreateUserReturnAllRequest) returns (CreateUserReturnAllResponse) {}
 
   rpc CreateUserReturnPartial(CreateUserReturnPartialRequest) returns (CreateUserReturnPartialResponse) {}
+
+  rpc GetProductsByIds(GetProductsByIdsRequest) returns (GetProductsByIdsResponse) {}
 }
 
 message Category {
   int32 id = 1;
 }
+
+message CreateLocationTransactionsRequest {
+  repeated google.protobuf.StringValue column1 = 1;
+  repeated google.protobuf.StringValue column2 = 2;
+}
+
+message CreateLocationTransactionsResponse {}
 
 message CreateProductRequest {
   int32 id = 1;
@@ -88,8 +99,21 @@ message CreateUserReturnPartialRow {
   google.protobuf.StringValue name = 2;
 }
 
+message GetProductsByIdsRequest {
+  repeated google.protobuf.StringValue dollar_1 = 1;
+}
+
+message GetProductsByIdsResponse {
+  repeated Product list = 1;
+}
+
 message Location {
   google.protobuf.StringValue id = 1;
+}
+
+message LocationTransaction {
+  google.protobuf.StringValue location_id = 1;
+  google.protobuf.StringValue transaction_id = 2;
 }
 
 message Product {
