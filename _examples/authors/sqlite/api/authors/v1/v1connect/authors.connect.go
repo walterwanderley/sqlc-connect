@@ -47,15 +47,6 @@ const (
 	AuthorsServiceListAuthorsProcedure = "/authors.v1.AuthorsService/ListAuthors"
 )
 
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	authorsServiceServiceDescriptor            = v1.File_authors_v1_authors_proto.Services().ByName("AuthorsService")
-	authorsServiceCreateAuthorMethodDescriptor = authorsServiceServiceDescriptor.Methods().ByName("CreateAuthor")
-	authorsServiceDeleteAuthorMethodDescriptor = authorsServiceServiceDescriptor.Methods().ByName("DeleteAuthor")
-	authorsServiceGetAuthorMethodDescriptor    = authorsServiceServiceDescriptor.Methods().ByName("GetAuthor")
-	authorsServiceListAuthorsMethodDescriptor  = authorsServiceServiceDescriptor.Methods().ByName("ListAuthors")
-)
-
 // AuthorsServiceClient is a client for the authors.v1.AuthorsService service.
 type AuthorsServiceClient interface {
 	CreateAuthor(context.Context, *connect.Request[v1.CreateAuthorRequest]) (*connect.Response[v1.CreateAuthorResponse], error)
@@ -73,29 +64,30 @@ type AuthorsServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewAuthorsServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) AuthorsServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
+	authorsServiceMethods := v1.File_authors_v1_authors_proto.Services().ByName("AuthorsService").Methods()
 	return &authorsServiceClient{
 		createAuthor: connect.NewClient[v1.CreateAuthorRequest, v1.CreateAuthorResponse](
 			httpClient,
 			baseURL+AuthorsServiceCreateAuthorProcedure,
-			connect.WithSchema(authorsServiceCreateAuthorMethodDescriptor),
+			connect.WithSchema(authorsServiceMethods.ByName("CreateAuthor")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteAuthor: connect.NewClient[v1.DeleteAuthorRequest, v1.DeleteAuthorResponse](
 			httpClient,
 			baseURL+AuthorsServiceDeleteAuthorProcedure,
-			connect.WithSchema(authorsServiceDeleteAuthorMethodDescriptor),
+			connect.WithSchema(authorsServiceMethods.ByName("DeleteAuthor")),
 			connect.WithClientOptions(opts...),
 		),
 		getAuthor: connect.NewClient[v1.GetAuthorRequest, v1.GetAuthorResponse](
 			httpClient,
 			baseURL+AuthorsServiceGetAuthorProcedure,
-			connect.WithSchema(authorsServiceGetAuthorMethodDescriptor),
+			connect.WithSchema(authorsServiceMethods.ByName("GetAuthor")),
 			connect.WithClientOptions(opts...),
 		),
 		listAuthors: connect.NewClient[v1.ListAuthorsRequest, v1.ListAuthorsResponse](
 			httpClient,
 			baseURL+AuthorsServiceListAuthorsProcedure,
-			connect.WithSchema(authorsServiceListAuthorsMethodDescriptor),
+			connect.WithSchema(authorsServiceMethods.ByName("ListAuthors")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -143,28 +135,29 @@ type AuthorsServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewAuthorsServiceHandler(svc AuthorsServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	authorsServiceMethods := v1.File_authors_v1_authors_proto.Services().ByName("AuthorsService").Methods()
 	authorsServiceCreateAuthorHandler := connect.NewUnaryHandler(
 		AuthorsServiceCreateAuthorProcedure,
 		svc.CreateAuthor,
-		connect.WithSchema(authorsServiceCreateAuthorMethodDescriptor),
+		connect.WithSchema(authorsServiceMethods.ByName("CreateAuthor")),
 		connect.WithHandlerOptions(opts...),
 	)
 	authorsServiceDeleteAuthorHandler := connect.NewUnaryHandler(
 		AuthorsServiceDeleteAuthorProcedure,
 		svc.DeleteAuthor,
-		connect.WithSchema(authorsServiceDeleteAuthorMethodDescriptor),
+		connect.WithSchema(authorsServiceMethods.ByName("DeleteAuthor")),
 		connect.WithHandlerOptions(opts...),
 	)
 	authorsServiceGetAuthorHandler := connect.NewUnaryHandler(
 		AuthorsServiceGetAuthorProcedure,
 		svc.GetAuthor,
-		connect.WithSchema(authorsServiceGetAuthorMethodDescriptor),
+		connect.WithSchema(authorsServiceMethods.ByName("GetAuthor")),
 		connect.WithHandlerOptions(opts...),
 	)
 	authorsServiceListAuthorsHandler := connect.NewUnaryHandler(
 		AuthorsServiceListAuthorsProcedure,
 		svc.ListAuthors,
-		connect.WithSchema(authorsServiceListAuthorsMethodDescriptor),
+		connect.WithSchema(authorsServiceMethods.ByName("ListAuthors")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/authors.v1.AuthorsService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
