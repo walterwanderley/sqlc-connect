@@ -89,7 +89,7 @@ func run() error {
 		if err != nil {
 			return fmt.Errorf("init replication error: %w", err)
 		}
-		defer lsdb.Close()
+		defer lsdb.Close(context.Background())
 	}
 	if err := ensureSchema(db); err != nil {
 		return fmt.Errorf("migration error: %w", err)
