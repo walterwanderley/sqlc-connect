@@ -5,11 +5,8 @@ package litestream
 import (
 	"context"
 	"errors"
-	"fmt"
-	"net/url"
 	"os"
-	"path"
-	"strconv"
+	"path/filepath"
 	"strings"
 
 	"github.com/benbjohnson/litestream"
@@ -24,43 +21,8 @@ func Replicate(ctx context.Context, dsn, replicaURL string) (*litestream.DB, err
 
 	lsdb := litestream.NewDB(dsn)
 
-	u, err := url.Parse(replicaURL)
-	if err != nil {
-		return nil, err
-	}
-
-	scheme := "https"
-	host := u.Host
-	path := strings.TrimPrefix(path.Clean(u.Path), "/")
-	bucket, region, endpoint, forcePathStyle := lss3.ParseHost(host)
-
-	if s := os.Getenv("LITESTREAM_SCHEME"); s != "" {
-		if s != "https" && s != "http" {
-			return nil, fmt.Errorf("unsupported LITESTREAM_SCHEME value: %q", s)
-		} else {
-			scheme = s
-		}
-	}
-
-	if e := os.Getenv("LITESTREAM_ENDPOINT"); e != "" {
-		endpoint = e
-	}
-
-	if r := os.Getenv("LITESTREAM_REGION"); r != "" {
-		region = r
-	}
-
-	if endpoint != "" {
-		endpoint = scheme + "://" + endpoint
-	}
-
-	if fps := os.Getenv("LITESTREAM_FORCE_PATH_STYLE"); fps != "" {
-		if b, err := strconv.ParseBool(fps); err != nil {
-			return nil, fmt.Errorf("invalid LITESTREAM_FORCE_PATH_STYLE value: %q", fps)
-		} else {
-			forcePathStyle = b
-		}
-	}
+	path := filepath.Base(replicaURL)
+	bucket, region, endpoint, forcePathStyle := lss3.ParseHost(strings.TrimSuffix(replicaURL, path))
 
 	client := lss3.NewReplicaClient()
 	client.Bucket = bucket

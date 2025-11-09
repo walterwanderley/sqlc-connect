@@ -25,7 +25,7 @@ import (
 	"golang.org/x/net/http2/h2c"
 
 	// database driver
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/litesql/go-sqlite3-ha"
 
 	"authors/internal/server/litefs"
 	"authors/internal/server/litestream"
@@ -77,7 +77,7 @@ func run() error {
 	}
 	slog.Info("startup", "GOMAXPROCS", runtime.GOMAXPROCS(0))
 
-	db, err := sql.Open("sqlite3", dbURL)
+	db, err := sql.Open("sqlite3-ha", dbURL)
 	if err != nil {
 		return err
 	}
