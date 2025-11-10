@@ -22,6 +22,7 @@ import (
 	"connectrpc.com/otelconnect"
 	"github.com/exaring/otelpgx"
 	"github.com/flowchartsman/swaggerui"
+	"github.com/litesql/go-ha"
 	"github.com/XSAM/otelsql"
 	semconv "go.opentelemetry.io/otel/semconv/v1.23.0"
 	"go.uber.org/automaxprocs/maxprocs"
@@ -83,7 +84,7 @@ func run() error {
 		slog.Warn("startup", "error", err)
 	}
 	slog.Info("startup", "GOMAXPROCS", runtime.GOMAXPROCS(0))
-
+	{{if eq .Database "sqlite"}}defer ha.Shutdown(){{end}}
 	{{if .DistributedTracing}}
 	var db {{if eq .SqlPackage "pgx/v5"}}*pgxpool.Pool{{else}}*sql.DB{{end}}
 	if otlpEndpoint != "" {

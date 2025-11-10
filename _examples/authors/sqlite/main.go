@@ -20,6 +20,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/flowchartsman/swaggerui"
+	"github.com/litesql/go-ha"
 	"go.uber.org/automaxprocs/maxprocs"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -76,6 +77,7 @@ func run() error {
 		slog.Warn("startup", "error", err)
 	}
 	slog.Info("startup", "GOMAXPROCS", runtime.GOMAXPROCS(0))
+	defer ha.Shutdown()
 
 	db, err := sql.Open("sqlite3-ha", dbURL)
 	if err != nil {
