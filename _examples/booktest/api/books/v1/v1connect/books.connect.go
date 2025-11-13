@@ -57,20 +57,6 @@ const (
 	BooksServiceUpdateBookISBNProcedure = "/books.v1.BooksService/UpdateBookISBN"
 )
 
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	booksServiceServiceDescriptor                = v1.File_books_v1_books_proto.Services().ByName("BooksService")
-	booksServiceBooksByTagsMethodDescriptor      = booksServiceServiceDescriptor.Methods().ByName("BooksByTags")
-	booksServiceBooksByTitleYearMethodDescriptor = booksServiceServiceDescriptor.Methods().ByName("BooksByTitleYear")
-	booksServiceCreateAuthorMethodDescriptor     = booksServiceServiceDescriptor.Methods().ByName("CreateAuthor")
-	booksServiceCreateBookMethodDescriptor       = booksServiceServiceDescriptor.Methods().ByName("CreateBook")
-	booksServiceDeleteBookMethodDescriptor       = booksServiceServiceDescriptor.Methods().ByName("DeleteBook")
-	booksServiceGetAuthorMethodDescriptor        = booksServiceServiceDescriptor.Methods().ByName("GetAuthor")
-	booksServiceGetBookMethodDescriptor          = booksServiceServiceDescriptor.Methods().ByName("GetBook")
-	booksServiceUpdateBookMethodDescriptor       = booksServiceServiceDescriptor.Methods().ByName("UpdateBook")
-	booksServiceUpdateBookISBNMethodDescriptor   = booksServiceServiceDescriptor.Methods().ByName("UpdateBookISBN")
-)
-
 // BooksServiceClient is a client for the books.v1.BooksService service.
 type BooksServiceClient interface {
 	BooksByTags(context.Context, *connect.Request[v1.BooksByTagsRequest]) (*connect.Response[v1.BooksByTagsResponse], error)
@@ -93,59 +79,60 @@ type BooksServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewBooksServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) BooksServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
+	booksServiceMethods := v1.File_books_v1_books_proto.Services().ByName("BooksService").Methods()
 	return &booksServiceClient{
 		booksByTags: connect.NewClient[v1.BooksByTagsRequest, v1.BooksByTagsResponse](
 			httpClient,
 			baseURL+BooksServiceBooksByTagsProcedure,
-			connect.WithSchema(booksServiceBooksByTagsMethodDescriptor),
+			connect.WithSchema(booksServiceMethods.ByName("BooksByTags")),
 			connect.WithClientOptions(opts...),
 		),
 		booksByTitleYear: connect.NewClient[v1.BooksByTitleYearRequest, v1.BooksByTitleYearResponse](
 			httpClient,
 			baseURL+BooksServiceBooksByTitleYearProcedure,
-			connect.WithSchema(booksServiceBooksByTitleYearMethodDescriptor),
+			connect.WithSchema(booksServiceMethods.ByName("BooksByTitleYear")),
 			connect.WithClientOptions(opts...),
 		),
 		createAuthor: connect.NewClient[v1.CreateAuthorRequest, v1.CreateAuthorResponse](
 			httpClient,
 			baseURL+BooksServiceCreateAuthorProcedure,
-			connect.WithSchema(booksServiceCreateAuthorMethodDescriptor),
+			connect.WithSchema(booksServiceMethods.ByName("CreateAuthor")),
 			connect.WithClientOptions(opts...),
 		),
 		createBook: connect.NewClient[v1.CreateBookRequest, v1.CreateBookResponse](
 			httpClient,
 			baseURL+BooksServiceCreateBookProcedure,
-			connect.WithSchema(booksServiceCreateBookMethodDescriptor),
+			connect.WithSchema(booksServiceMethods.ByName("CreateBook")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteBook: connect.NewClient[v1.DeleteBookRequest, v1.DeleteBookResponse](
 			httpClient,
 			baseURL+BooksServiceDeleteBookProcedure,
-			connect.WithSchema(booksServiceDeleteBookMethodDescriptor),
+			connect.WithSchema(booksServiceMethods.ByName("DeleteBook")),
 			connect.WithClientOptions(opts...),
 		),
 		getAuthor: connect.NewClient[v1.GetAuthorRequest, v1.GetAuthorResponse](
 			httpClient,
 			baseURL+BooksServiceGetAuthorProcedure,
-			connect.WithSchema(booksServiceGetAuthorMethodDescriptor),
+			connect.WithSchema(booksServiceMethods.ByName("GetAuthor")),
 			connect.WithClientOptions(opts...),
 		),
 		getBook: connect.NewClient[v1.GetBookRequest, v1.GetBookResponse](
 			httpClient,
 			baseURL+BooksServiceGetBookProcedure,
-			connect.WithSchema(booksServiceGetBookMethodDescriptor),
+			connect.WithSchema(booksServiceMethods.ByName("GetBook")),
 			connect.WithClientOptions(opts...),
 		),
 		updateBook: connect.NewClient[v1.UpdateBookRequest, v1.UpdateBookResponse](
 			httpClient,
 			baseURL+BooksServiceUpdateBookProcedure,
-			connect.WithSchema(booksServiceUpdateBookMethodDescriptor),
+			connect.WithSchema(booksServiceMethods.ByName("UpdateBook")),
 			connect.WithClientOptions(opts...),
 		),
 		updateBookISBN: connect.NewClient[v1.UpdateBookISBNRequest, v1.UpdateBookISBNResponse](
 			httpClient,
 			baseURL+BooksServiceUpdateBookISBNProcedure,
-			connect.WithSchema(booksServiceUpdateBookISBNMethodDescriptor),
+			connect.WithSchema(booksServiceMethods.ByName("UpdateBookISBN")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -228,58 +215,59 @@ type BooksServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewBooksServiceHandler(svc BooksServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	booksServiceMethods := v1.File_books_v1_books_proto.Services().ByName("BooksService").Methods()
 	booksServiceBooksByTagsHandler := connect.NewUnaryHandler(
 		BooksServiceBooksByTagsProcedure,
 		svc.BooksByTags,
-		connect.WithSchema(booksServiceBooksByTagsMethodDescriptor),
+		connect.WithSchema(booksServiceMethods.ByName("BooksByTags")),
 		connect.WithHandlerOptions(opts...),
 	)
 	booksServiceBooksByTitleYearHandler := connect.NewUnaryHandler(
 		BooksServiceBooksByTitleYearProcedure,
 		svc.BooksByTitleYear,
-		connect.WithSchema(booksServiceBooksByTitleYearMethodDescriptor),
+		connect.WithSchema(booksServiceMethods.ByName("BooksByTitleYear")),
 		connect.WithHandlerOptions(opts...),
 	)
 	booksServiceCreateAuthorHandler := connect.NewUnaryHandler(
 		BooksServiceCreateAuthorProcedure,
 		svc.CreateAuthor,
-		connect.WithSchema(booksServiceCreateAuthorMethodDescriptor),
+		connect.WithSchema(booksServiceMethods.ByName("CreateAuthor")),
 		connect.WithHandlerOptions(opts...),
 	)
 	booksServiceCreateBookHandler := connect.NewUnaryHandler(
 		BooksServiceCreateBookProcedure,
 		svc.CreateBook,
-		connect.WithSchema(booksServiceCreateBookMethodDescriptor),
+		connect.WithSchema(booksServiceMethods.ByName("CreateBook")),
 		connect.WithHandlerOptions(opts...),
 	)
 	booksServiceDeleteBookHandler := connect.NewUnaryHandler(
 		BooksServiceDeleteBookProcedure,
 		svc.DeleteBook,
-		connect.WithSchema(booksServiceDeleteBookMethodDescriptor),
+		connect.WithSchema(booksServiceMethods.ByName("DeleteBook")),
 		connect.WithHandlerOptions(opts...),
 	)
 	booksServiceGetAuthorHandler := connect.NewUnaryHandler(
 		BooksServiceGetAuthorProcedure,
 		svc.GetAuthor,
-		connect.WithSchema(booksServiceGetAuthorMethodDescriptor),
+		connect.WithSchema(booksServiceMethods.ByName("GetAuthor")),
 		connect.WithHandlerOptions(opts...),
 	)
 	booksServiceGetBookHandler := connect.NewUnaryHandler(
 		BooksServiceGetBookProcedure,
 		svc.GetBook,
-		connect.WithSchema(booksServiceGetBookMethodDescriptor),
+		connect.WithSchema(booksServiceMethods.ByName("GetBook")),
 		connect.WithHandlerOptions(opts...),
 	)
 	booksServiceUpdateBookHandler := connect.NewUnaryHandler(
 		BooksServiceUpdateBookProcedure,
 		svc.UpdateBook,
-		connect.WithSchema(booksServiceUpdateBookMethodDescriptor),
+		connect.WithSchema(booksServiceMethods.ByName("UpdateBook")),
 		connect.WithHandlerOptions(opts...),
 	)
 	booksServiceUpdateBookISBNHandler := connect.NewUnaryHandler(
 		BooksServiceUpdateBookISBNProcedure,
 		svc.UpdateBookISBN,
-		connect.WithSchema(booksServiceUpdateBookISBNMethodDescriptor),
+		connect.WithSchema(booksServiceMethods.ByName("UpdateBookISBN")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/books.v1.BooksService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

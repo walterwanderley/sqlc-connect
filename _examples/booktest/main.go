@@ -40,8 +40,7 @@ const serviceName = "booktest"
 var (
 	dbURL                string
 	port, prometheusPort int
-
-	otlpEndpoint string
+	otlpEndpoint         string
 
 	//go:embed api/apidocs.swagger.json
 	openAPISpec []byte
@@ -54,7 +53,6 @@ func main() {
 	flag.IntVar(&prometheusPort, "prometheus-port", 0, "The metrics server port")
 	flag.BoolVar(&dev, "dev", false, "Set logger to development mode")
 	flag.StringVar(&otlpEndpoint, "otlp-endpoint", "", "The Open Telemetry Protocol Endpoint (example: localhost:4317)")
-
 	flag.Parse()
 
 	initLogger(dev)

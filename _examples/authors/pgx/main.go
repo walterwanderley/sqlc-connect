@@ -44,9 +44,7 @@ func main() {
 	var dev bool
 	flag.StringVar(&dbURL, "db", "", "The Database connection URL")
 	flag.IntVar(&port, "port", 5000, "The server port")
-
 	flag.BoolVar(&dev, "dev", false, "Set logger to development mode")
-
 	flag.Parse()
 
 	initLogger(dev)

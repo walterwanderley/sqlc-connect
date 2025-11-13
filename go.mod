@@ -3,9 +3,9 @@ module github.com/walterwanderley/sqlc-connect
 go 1.25
 
 require (
-	github.com/walterwanderley/sqlc-grpc v0.20.1
-	golang.org/x/mod v0.29.0
-	golang.org/x/tools v0.38.0
+	github.com/walterwanderley/sqlc-grpc v0.21.0
+	golang.org/x/mod v0.30.0
+	golang.org/x/tools v0.39.0
 )
 
 require (
