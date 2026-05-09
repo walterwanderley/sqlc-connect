@@ -1,13 +1,9 @@
-[![LiberaPay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/walterwanderley/donate)
-[![receives](https://img.shields.io/liberapay/receives/walterwanderley.svg?logo=liberapay)](https://liberapay.com/walterwanderley/donate)
-[![patrons](https://img.shields.io/liberapay/patrons/walterwanderley.svg?logo=liberapay)](https://liberapay.com/walterwanderley/donate)
-
 # sqlc-connect
 Generate [connect-go](https://connect.build/) server from SQL. If you’re searching for a SQLC plugin, use [sqlc-gen-go-server](https://github.com/walterwanderley/sqlc-gen-go-server/).
 
 ### Requirements
 
-- Go 1.21 or superior
+- Go 1.25 or superior
 - [sqlc](https://sqlc.dev/)
 - [buf](https://buf.build/)
 
