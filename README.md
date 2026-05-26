@@ -3,12 +3,10 @@ Generate [connect-go](https://connect.build/) server from SQL. If you’re searc
 
 ### Requirements
 
-- Go 1.25 or superior
-- [sqlc](https://sqlc.dev/)
+- Go 1.26 or superior
 - [buf](https://buf.build/)
 
 ```sh
-go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 go install github.com/bufbuild/buf/cmd/buf@latest
 ```
 
@@ -68,25 +66,19 @@ sql:
       
 ```
 
-3. Execute sqlc
-
-```sh
-sqlc generate
-```
-
-4. Execute sqlc-connect
+3. Execute sqlc-connect
 
 ```sh
 sqlc-connect -m "authors"
 ```
 
-5. Run the generated server
+4. Run the generated server
 
 ```sh
 go run . -db [Database Connection URL] -dev
 ```
 
-6. Enjoy!
+5. Enjoy!
 
 [http://localhost:5000/swagger](http://localhost:5000/swagger)
 
@@ -101,10 +93,9 @@ grpcui -plaintext localhost:5000
 
 - It's safe to edit any generated code that doesn't have the `DO NOT EDIT` indication at the very first line.
 
-- After modify a SQL file, execute these commands below:
+- After modify a SQL file, execute the command below:
 
 ```sh
-sqlc generate
 go generate
 ```
 

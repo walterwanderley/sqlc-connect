@@ -24,7 +24,7 @@ import (
 	"github.com/flowchartsman/swaggerui"
 	"github.com/litesql/go-ha"
 	"github.com/XSAM/otelsql"
-	semconv "go.opentelemetry.io/otel/semconv/v1.23.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.40.0"
 	"go.uber.org/automaxprocs/maxprocs"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -164,14 +164,14 @@ func run() error {
 		}
 		{{else}}
 		db, err = otelsql.Open("{{ .DatabaseDriver}}", dbURL, otelsql.WithAttributes(
-			{{if eq .Database "mysql"}}semconv.DBSystemMySQL{{else if eq .Database "sqlite"}}semconv.DBSystemSqlite{{else}}semconv.DBSystemPostgreSQL{{end}},
+			{{if eq .Database "mysql"}}semconv.DBSystemNameMySQL{{else if eq .Database "sqlite"}}semconv.DBSystemNameSQLite{{else}}semconv.DBSystemNamePostgreSQL{{end}},
 		))
 		if err != nil {			
 			return err
 		}
 
 		_, err = otelsql.RegisterDBStatsMetrics(db, otelsql.WithAttributes(
-			{{if eq .Database "mysql"}}semconv.DBSystemMySQL{{else if eq .Database "sqlite"}}semconv.DBSystemSqlite{{else}}semconv.DBSystemPostgreSQL{{end}},
+			{{if eq .Database "mysql"}}semconv.DBSystemNameMySQL{{else if eq .Database "sqlite"}}semconv.DBSystemNameSQLite{{else}}semconv.DBSystemNamePostgreSQL{{end}},
 		))
 		if err != nil {
 			return err

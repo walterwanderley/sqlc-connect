@@ -21,7 +21,7 @@ import (
 	"connectrpc.com/otelconnect"
 	"github.com/XSAM/otelsql"
 	"github.com/flowchartsman/swaggerui"
-	semconv "go.opentelemetry.io/otel/semconv/v1.23.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.40.0"
 	"go.uber.org/automaxprocs/maxprocs"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -74,14 +74,14 @@ func run() error {
 	if otlpEndpoint != "" {
 
 		db, err = otelsql.Open("pgx", dbURL, otelsql.WithAttributes(
-			semconv.DBSystemPostgreSQL,
+			semconv.DBSystemNamePostgreSQL,
 		))
 		if err != nil {
 			return err
 		}
 
 		_, err = otelsql.RegisterDBStatsMetrics(db, otelsql.WithAttributes(
-			semconv.DBSystemPostgreSQL,
+			semconv.DBSystemNamePostgreSQL,
 		))
 		if err != nil {
 			return err
